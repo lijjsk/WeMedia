@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="lijjsk-wemedia-gateway" />
+        <module name="lijjsk-wemedia-common" />
+        <module name="lijjsk-wemedia-login" />
+        <module name="lijjsk-wemedia-utils" />
+        <module name="lijjsk-wemedia-api" />
+        <module name="lijjsk-wemedia-basic" />
+        <module name="lijjsk-wemedia-test" />
+        <module name="lijjsk-wemedia-model" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>
