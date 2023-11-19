@@ -1,8 +1,8 @@
 server:
-  port: 8081
+  port: 51702
 spring:
   application:
-    name: lijjsk-wemedia-login
+    name: wemedia-video
   cloud:
     nacos:
       discovery:

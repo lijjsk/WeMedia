@@ -12,7 +12,11 @@
     <artifactId>lijjsk-wemedia-service</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>lijjsk-wemedia-login</module>
+
+        <module>lijjsk-wemeida-login</module>
+        <module>lijjsk-advertise-login</module>
+        <module>lijjsk-manage-login</module>
+        <module>lijjsk-wemeida-video</module>
     </modules>
 
     <properties>
@@ -52,6 +56,10 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
     </dependencies>
 </project>

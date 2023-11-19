@@ -2,19 +2,26 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="lijjsk-wemedia-gateway" />
         <module name="lijjsk-wemedia-common" />
-        <module name="lijjsk-wemedia-login" />
+        <module name="lijjsk-wemeida-video" />
         <module name="lijjsk-wemedia-utils" />
         <module name="lijjsk-wemedia-api" />
         <module name="lijjsk-wemedia-basic" />
+        <module name="lijjsk-advertise-login" />
+        <module name="lijjsk-manage-login" />
         <module name="lijjsk-wemedia-test" />
         <module name="lijjsk-wemedia-model" />
+        <module name="lijjsk-wemeida-login" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="lijjsk-wemedia-login" target="18" />
+    </bytecodeTargetLevel>
   </component>
 </project>
