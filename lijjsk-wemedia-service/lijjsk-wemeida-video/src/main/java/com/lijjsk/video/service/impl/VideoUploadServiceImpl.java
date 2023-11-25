@@ -1,22 +1,18 @@
 package com.lijjsk.video.service.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.common.enums.AppHttpCodeEnum;
-import com.lijjsk.model.wemedia.video.dtos.VideoDto;
 import com.lijjsk.model.wemedia.video.pojos.Video;
 import com.lijjsk.utils.common.FFmpegUtils;
-import com.lijjsk.utils.common.ImageUtils;
 import com.lijjsk.video.mapper.VideoMapper;
-import com.lijjsk.video.service.VideoService;
+import com.lijjsk.video.service.VideoTaskService;
+import com.lijjsk.video.service.VideoUploadService;
 import com.minio.file.service.FileStorageService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ws.schild.jave.info.MultimediaInfo;
 
 import java.io.IOException;
 import java.util.Date;
@@ -24,10 +20,12 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class VideoServiceImpl extends ServiceImpl<VideoMapper,Video> implements VideoService {
+public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> implements VideoUploadService {
     @Autowired
     private FileStorageService fileStorageService;
 
+    @Autowired
+    private VideoTaskService videoTaskService;
     /**
      * 接收用户上传的视频文件
      * @param multipartFile 文件上传接口
@@ -130,6 +128,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper,Video> implements 
             //获取返回的url保存到数据库中
             video.setCoverUrl(imageUrl);
             updateById(video);
+            videoTaskService.addVideoToTask(video.getId(),new Date());
             return ResponseResult.okResult(video);
         }
     }

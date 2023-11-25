@@ -2,4 +2,3 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.lijjsk.common.exception.ExceptionCatch,\
   com.lijjsk.common.swagger.SwaggerConfiguration,\
   com.lijjsk.common.swagger.Swagger2Configuration,\
-  com.lijjsk.common.redis.CacheService

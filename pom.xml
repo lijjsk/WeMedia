@@ -49,6 +49,7 @@
         <hutool.version>5.8.23</hutool.version>
         <minio.version>8.5.7</minio.version>
         <openfeign.version>4.0.4</openfeign.version>
+        <loadbalancer.version>4.0.4</loadbalancer.version>
     </properties>
 
     <dependencyManagement>
@@ -137,6 +138,11 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-openfeign</artifactId>
                 <version>${openfeign.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+                <version>${loadbalancer.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
