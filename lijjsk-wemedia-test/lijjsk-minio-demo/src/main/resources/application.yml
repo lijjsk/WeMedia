@@ -1,0 +1,9 @@
+
+minio:
+  accessKey: miniouser
+  secretKey: miniouser
+  bucket: public
+  endpoint: http://192.168.200.145:9000
+  readPath: http://192.168.200.145:9000
+server:
+  port: 8085

@@ -9,6 +9,7 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/lijjsk-wemedia-basic/lijjsk-file-starter/pom.xml" />
         <option value="$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemedia-login/pom.xml" />
       </set>
     </option>
