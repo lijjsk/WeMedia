@@ -12,7 +12,6 @@
         <module name="lijjsk-wemeida-video" />
         <module name="lijjsk-wemedia-utils" />
         <module name="lijjsk-wemedia-api" />
-        <module name="lijjsk-wemedia-basic" />
         <module name="lijjsk-wemedia-test" />
         <module name="lijjsk-wemedia-model" />
         <module name="lijjsk-wemeida-login" />
@@ -21,8 +20,12 @@
     <bytecodeTargetLevel>
       <module name="lijjsk-advertise-login" target="18" />
       <module name="lijjsk-manage-login" target="18" />
+      <module name="lijjsk-minio-demo" target="18" />
       <module name="lijjsk-wemedia-login" target="18" />
+      <module name="lijjsk-wemedia-openfeign-api" target="18" />
+      <module name="lijjsk-wemedia-schedule" target="18" />
       <module name="lijjsk-wemeida-vedio" target="18" />
+      <module name="minio-file-starter" target="18" />
     </bytecodeTargetLevel>
   </component>
 </project>
