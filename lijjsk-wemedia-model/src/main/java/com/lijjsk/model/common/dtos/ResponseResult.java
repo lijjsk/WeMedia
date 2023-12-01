@@ -1,23 +1,23 @@
 package com.lijjsk.model.common.dtos;
 
-import com.alibaba.fastjson2.JSON;
+
 import com.lijjsk.model.common.enums.AppHttpCodeEnum;
+import lombok.Data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 通用的结果返回类
  * @param <T>
  */
+@Data
 public class ResponseResult<T> implements Serializable {
 
     private String host;
 
     private Integer code;
 
-    private String errorMessage;
+    private String Message;
 
     private T data;
 
@@ -32,13 +32,13 @@ public class ResponseResult<T> implements Serializable {
 
     public ResponseResult(Integer code, String msg, T data) {
         this.code = code;
-        this.errorMessage = msg;
+        this.Message = msg;
         this.data = data;
     }
 
     public ResponseResult(Integer code, String msg) {
         this.code = code;
-        this.errorMessage = msg;
+        this.Message = msg;
     }
 
     public static ResponseResult errorResult(int code, String msg) {
@@ -77,7 +77,7 @@ public class ResponseResult<T> implements Serializable {
 
     public ResponseResult<?> error(Integer code, String msg) {
         this.code = code;
-        this.errorMessage = msg;
+        this.Message = msg;
         return this;
     }
 
@@ -90,7 +90,7 @@ public class ResponseResult<T> implements Serializable {
     public ResponseResult<?> ok(Integer code, T data, String msg) {
         this.code = code;
         this.data = data;
-        this.errorMessage = msg;
+        this.Message = msg;
         return this;
     }
 
@@ -99,32 +99,16 @@ public class ResponseResult<T> implements Serializable {
         return this;
     }
 
-    public Integer getCode() {
-        return code;
-    }
-
     public void setCode(Integer code) {
         this.code = code;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public T getData() {
-        return data;
+    public void setMessage(String message) {
+        this.Message = message;
     }
 
     public void setData(T data) {
         this.data = data;
-    }
-
-    public String getHost() {
-        return host;
     }
 
     public void setHost(String host) {
@@ -134,9 +118,9 @@ public class ResponseResult<T> implements Serializable {
 
     public static void main(String[] args) {
         //前置
-        /*AppHttpCodeEnum success = AppHttpCodeEnum.SUCCESS;
+        AppHttpCodeEnum success = AppHttpCodeEnum.SUCCESS;
         System.out.println(success.getCode());
-        System.out.println(success.getErrorMessage());*/
+        System.out.println(success.getErrorMessage());
 
         //查询一个对象
 //        Map map = new HashMap();
@@ -148,20 +132,20 @@ public class ResponseResult<T> implements Serializable {
 
         //新增，修改，删除  在项目中统一返回成功即可
        /* ResponseResult result = ResponseResult.errorResult(AppHttpCodeEnum.SUCCESS);
-        System.out.println(JSON.toJSONString(result));*/
+        System.out.println(JSON.toJSONString(result));
 
 
         //根据不用的业务返回不同的提示信息  比如：当前操作需要登录、参数错误
         /*ResponseResult result = ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
         System.out.println(JSON.toJSONString(result));*/
 
-        //查询分页信息
-        PageResponseResult responseResult = new PageResponseResult(1,5,50);
-        List list = new ArrayList();
-        list.add("itcast");
-        list.add("itheima");
-        responseResult.setData(list);
-        System.out.println(JSON.toJSONString(responseResult));
+//        //查询分页信息
+//        PageResponseResult responseResult = new PageResponseResult(1,5,50);
+//        List list = new ArrayList();
+//        list.add("itcast");
+//        list.add("itheima");
+//        responseResult.setData(list);
+//        System.out.println(JSON.toJSONString(responseResult));
 
     }
 

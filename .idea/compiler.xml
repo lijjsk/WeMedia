@@ -13,15 +13,16 @@
         <module name="lijjsk-wemedia-utils" />
         <module name="lijjsk-wemedia-api" />
         <module name="lijjsk-wemedia-basic" />
-        <module name="lijjsk-advertise-login" />
-        <module name="lijjsk-manage-login" />
         <module name="lijjsk-wemedia-test" />
         <module name="lijjsk-wemedia-model" />
         <module name="lijjsk-wemeida-login" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="lijjsk-advertise-login" target="18" />
+      <module name="lijjsk-manage-login" target="18" />
       <module name="lijjsk-wemedia-login" target="18" />
+      <module name="lijjsk-wemeida-vedio" target="18" />
     </bytecodeTargetLevel>
   </component>
 </project>
