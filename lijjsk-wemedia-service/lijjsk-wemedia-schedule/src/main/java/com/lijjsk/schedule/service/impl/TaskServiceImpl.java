@@ -45,7 +45,6 @@ public class TaskServiceImpl implements TaskService {
             addTaskToCache(task);
         }
 
-
         return task.getTaskId();
     }
 

@@ -10,6 +10,7 @@ import com.lijjsk.video.service.VideoTaskService;
 import com.lijjsk.video.service.VideoUploadService;
 import com.minio.file.service.FileStorageService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,7 @@ public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> imple
     private FileStorageService fileStorageService;
 
     @Autowired
-    private VideoTaskService videoTaskService;
+    private RabbitTemplate rabbitTemplate;
     /**
      * 接收用户上传的视频文件
      * @param multipartFile 文件上传接口
@@ -52,7 +53,6 @@ public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> imple
 //            // 处理未认证的情况，可能返回错误信息或者进行其他逻辑处理
 //            return ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
 //        }
-
         //生成视频唯一主键
 //        String filename = UUID.randomUUID().toString().replace("-", "");
         //视频所在文件夹为用户Id  这里先设置一个默认值用于测试
@@ -61,9 +61,11 @@ public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> imple
         String uuid = UUID.randomUUID().toString().replace("-", "");
         //获取原视频名称
         String originalVideoName = multipartFile.getOriginalFilename();
+        //获取视频原格式
+        String videoType = originalVideoName.substring(originalVideoName.lastIndexOf(".")+1);
         String videoUrl = null;
         try {
-            videoUrl = fileStorageService.uploadVideoFile(packageName, uuid, originalVideoName, multipartFile.getInputStream());
+            videoUrl = fileStorageService.uploadVideoFile(packageName, uuid, originalVideoName, multipartFile.getInputStream(),videoType);
             log.info("上传视频到minio中,videoUrl:{}",videoUrl);
         } catch (IOException e) {
             log.error("上传视频文件失败");
@@ -71,7 +73,9 @@ public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> imple
         }
         //TODO 默认保存视频第一帧的图片作为视频的封面
         MultipartFile image = FFmpegUtils.getThumbnailFromMultipartFile(multipartFile);
+        //获取原图片名
         String originalImageName = image.getOriginalFilename();
+        //获取原图片格式
         String imageUrl = null;
         try {
             imageUrl = fileStorageService.uploadImgFile(packageName,uuid,originalImageName,image.getInputStream());
@@ -128,7 +132,7 @@ public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> imple
             //获取返回的url保存到数据库中
             video.setCoverUrl(imageUrl);
             updateById(video);
-            videoTaskService.addVideoToTask(video.getId(),new Date());
+            rabbitTemplate.convertAndSend("video-review-queue", video.getId());
             return ResponseResult.okResult(video);
         }
     }

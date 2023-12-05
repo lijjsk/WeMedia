@@ -67,7 +67,7 @@ public class FFmpegUtils {
     public static MultimediaInfo getMultimediaInfoFromMultipartFile(MultipartFile multipartFile) {
         MultimediaInfo multimediaInfo = null;
         try {
-            File tempFile = convertMultipartFileToFile(multipartFile);
+            File tempFile = convertMultipartFileToFile(multipartFile,multipartFile.getOriginalFilename());
             multimediaInfo = getMultimediaInfo(tempFile.getAbsolutePath());
             // 删除临时文件
             tempFile.delete();
@@ -84,33 +84,34 @@ public class FFmpegUtils {
      * @param multipartFile multipartFile类型视频参数
      * @return MultipartFile格式的压缩后的视频文件
      */
-    public static MultipartFile compressVideoTo1080p60hz(MultipartFile multipartFile) {
+    public static MultipartFile compressVideoTo1080p60hz(MultipartFile multipartFile,String fileName) {
         try {
             // 1. 将 MultipartFile 转换为临时文件
-            File inputFile = convertMultipartFileToFile(multipartFile);
-
+            File inputFile = convertMultipartFileToFile(multipartFile,fileName);
+            String originalName = multipartFile.getOriginalFilename();
             // 2. 指定压缩后的输出文件
-            File outputFile = new File("F:\\vedio\\videoTemp\\compressed_temp_video.mp4");
+            File outputFile = new File("F:\\video\\videoTemp\\"+"1080p60hz_"+fileName+".mp4");
 
             // 3. 设置视频属性，包括分辨率、帧率等
             VideoAttributes videoAttributes = new VideoAttributes();
             videoAttributes.setCodec("h264");
-            videoAttributes.setBitRate(5000000); // 设置比特率，可以根据需要进行调整
+            videoAttributes.setBitRate(8000000); // 设置比特率，可以根据需要进行调整
             videoAttributes.setFrameRate(60);
             videoAttributes.setSize(new VideoSize(1920, 1080));
 
             // 4. 设置音频属性
-            AudioAttributes audioAttributes = new AudioAttributes();
-            audioAttributes.setCodec("aac");
-            audioAttributes.setBitRate(128000); // 设置音频比特率，可以根据需要进行调整
-            audioAttributes.setChannels(2);
-            audioAttributes.setSamplingRate(44100);
+//            AudioAttributes audioAttributes = new AudioAttributes();
+//            audioAttributes.setCodec("aac");
+//            audioAttributes.setBitRate(128000); // 设置音频比特率，可以根据需要进行调整
+//            audioAttributes.setChannels(2);
+//            audioAttributes.setSamplingRate(44100);
 
             // 5. 创建 MultimediaObject，进行视频压缩
             MultimediaObject multimediaObject = new MultimediaObject(inputFile);
             EncodingAttributes encodingAttributes = new EncodingAttributes();
             encodingAttributes.setOutputFormat("mp4");
             encodingAttributes.setVideoAttributes(videoAttributes);
+            //不压缩音频
             encodingAttributes.setAudioAttributes(null);
 
             Encoder encoder = new Encoder();
@@ -129,12 +130,196 @@ public class FFmpegUtils {
             return null;
         }
     }
+    /**
+     * 通过multipartFile获取视频文件，并将画质压缩为1080p30hz
+     *
+     * @param multipartFile multipartFile类型视频参数
+     * @return MultipartFile格式的压缩后的视频文件
+     */
+    public static MultipartFile compressVideoTo1080p30hz(MultipartFile multipartFile,String fileName) {
+        try {
+            // 1. 将 MultipartFile 转换为临时文件
+            File inputFile = convertMultipartFileToFile(multipartFile,fileName);
+            String originalName = multipartFile.getOriginalFilename();
+            // 2. 指定压缩后的输出文件
+            File outputFile = new File("F:\\video\\videoTemp\\"+"1080p30hz_"+fileName+".mp4");
 
+            // 3. 设置视频属性，包括分辨率、帧率等
+            VideoAttributes videoAttributes = new VideoAttributes();
+            videoAttributes.setCodec("h264");
+            videoAttributes.setBitRate(5000000); // 设置比特率，可以根据需要进行调整
+            videoAttributes.setFrameRate(60);
+            videoAttributes.setSize(new VideoSize(1920, 1080));
+
+            // 5. 创建 MultimediaObject，进行视频压缩
+            MultimediaObject multimediaObject = new MultimediaObject(inputFile);
+            EncodingAttributes encodingAttributes = new EncodingAttributes();
+            encodingAttributes.setOutputFormat("mp4");
+            encodingAttributes.setVideoAttributes(videoAttributes);
+            //不压缩音频
+            encodingAttributes.setAudioAttributes(null);
+
+            Encoder encoder = new Encoder();
+            encoder.encode(multimediaObject, outputFile, encodingAttributes);
+
+            // 6. 将压缩后的文件转换为 MultipartFile
+            MultipartFile compressedMultipartFile = convertFileToMultipartFile(outputFile);
+
+            // 7. 删除临时文件
+            inputFile.delete();
+            outputFile.delete();
+
+            return compressedMultipartFile;
+        } catch (IOException | EncoderException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    /**
+     * 通过multipartFile获取视频文件，并将画质压缩为720p30hz
+     *
+     * @param multipartFile multipartFile类型视频参数
+     * @return MultipartFile格式的压缩后的视频文件
+     */
+    public static MultipartFile compressVideoTo720p30hz(MultipartFile multipartFile,String fileName) {
+        try {
+            // 1. 将 MultipartFile 转换为临时文件
+            File inputFile = convertMultipartFileToFile(multipartFile,fileName);
+            String originalName = multipartFile.getOriginalFilename();
+            // 2. 指定压缩后的输出文件
+            File outputFile = new File("F:\\video\\videoTemp\\"+"720p30hz_"+fileName+".mp4");
+
+            // 3. 设置视频属性，包括分辨率、帧率等
+            VideoAttributes videoAttributes = new VideoAttributes();
+            videoAttributes.setCodec("h264");
+            videoAttributes.setBitRate(3000000); // 设置比特率，可以根据需要进行调整
+            videoAttributes.setFrameRate(30);
+            videoAttributes.setSize(new VideoSize(1280, 720));
+
+            // 5. 创建 MultimediaObject，进行视频压缩
+            MultimediaObject multimediaObject = new MultimediaObject(inputFile);
+            EncodingAttributes encodingAttributes = new EncodingAttributes();
+            encodingAttributes.setOutputFormat("mp4");
+            encodingAttributes.setVideoAttributes(videoAttributes);
+            //不压缩音频
+            encodingAttributes.setAudioAttributes(null);
+
+            Encoder encoder = new Encoder();
+            encoder.encode(multimediaObject, outputFile, encodingAttributes);
+
+            // 6. 将压缩后的文件转换为 MultipartFile
+            MultipartFile compressedMultipartFile = convertFileToMultipartFile(outputFile);
+
+            // 7. 删除临时文件
+            inputFile.delete();
+            outputFile.delete();
+
+            return compressedMultipartFile;
+        } catch (IOException | EncoderException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    /**
+     * 通过multipartFile获取视频文件，并将画质压缩为480p30hz
+     *
+     * @param multipartFile multipartFile类型视频参数
+     * @return MultipartFile格式的压缩后的视频文件
+     */
+    public static MultipartFile compressVideoTo480p30hz(MultipartFile multipartFile,String fileName) {
+        try {
+            // 1. 将 MultipartFile 转换为临时文件
+            File inputFile = convertMultipartFileToFile(multipartFile,fileName);
+            String originalName = multipartFile.getOriginalFilename();
+            // 2. 指定压缩后的输出文件
+            File outputFile = new File("F:\\video\\videoTemp\\"+"480p30hz_"+fileName+".mp4");
+
+            // 3. 设置视频属性，包括分辨率、帧率等
+            VideoAttributes videoAttributes = new VideoAttributes();
+            videoAttributes.setCodec("h264");
+            videoAttributes.setBitRate(1500000); // 设置比特率，可以根据需要进行调整
+            videoAttributes.setFrameRate(30);
+            videoAttributes.setSize(new VideoSize(854, 480));
+
+            // 5. 创建 MultimediaObject，进行视频压缩
+            MultimediaObject multimediaObject = new MultimediaObject(inputFile);
+            EncodingAttributes encodingAttributes = new EncodingAttributes();
+            encodingAttributes.setOutputFormat("mp4");
+            encodingAttributes.setVideoAttributes(videoAttributes);
+            //不压缩音频
+            encodingAttributes.setAudioAttributes(null);
+
+            Encoder encoder = new Encoder();
+            encoder.encode(multimediaObject, outputFile, encodingAttributes);
+
+            // 6. 将压缩后的文件转换为 MultipartFile
+            MultipartFile compressedMultipartFile = convertFileToMultipartFile(outputFile);
+
+            // 7. 删除临时文件
+            inputFile.delete();
+            outputFile.delete();
+
+            return compressedMultipartFile;
+        } catch (IOException | EncoderException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    /**
+     * 通过multipartFile获取视频文件，并将画质压缩为320p30hz
+     *
+     * @param multipartFile multipartFile类型视频参数
+     * @return MultipartFile格式的压缩后的视频文件
+     */
+    public static MultipartFile compressVideoTo320p30hz(MultipartFile multipartFile,String fileName) {
+        try {
+            // 1. 将 MultipartFile 转换为临时文件
+            File inputFile = convertMultipartFileToFile(multipartFile,fileName);
+            String originalName = multipartFile.getOriginalFilename();
+            // 2. 指定压缩后的输出文件
+            File outputFile = new File("F:\\video\\videoTemp\\"+"320p30hz_"+fileName+".mp4");
+
+            // 3. 设置视频属性，包括分辨率、帧率等
+            VideoAttributes videoAttributes = new VideoAttributes();
+            videoAttributes.setCodec("h264");
+            videoAttributes.setBitRate(1000000); // 设置比特率，可以根据需要进行调整
+            videoAttributes.setFrameRate(30);
+            videoAttributes.setSize(new VideoSize(640, 320));
+
+            // 5. 创建 MultimediaObject，进行视频压缩
+            MultimediaObject multimediaObject = new MultimediaObject(inputFile);
+            EncodingAttributes encodingAttributes = new EncodingAttributes();
+            encodingAttributes.setOutputFormat("mp4");
+            encodingAttributes.setVideoAttributes(videoAttributes);
+            //不压缩音频
+            encodingAttributes.setAudioAttributes(null);
+
+            Encoder encoder = new Encoder();
+            encoder.encode(multimediaObject, outputFile, encodingAttributes);
+
+            // 6. 将压缩后的文件转换为 MultipartFile
+            MultipartFile compressedMultipartFile = convertFileToMultipartFile(outputFile);
+
+            // 7. 删除临时文件
+            inputFile.delete();
+            outputFile.delete();
+
+            return compressedMultipartFile;
+        } catch (IOException | EncoderException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     // 这个方法用于将 MultipartFile 转换为临时文件，具体实现可以根据你的需求进行调整
-    private static File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-        File file = new File("F:\\vedio\\videoTemp\\uncompressed_temp_video.mp4");
-        try (InputStream inputStream = multipartFile.getInputStream()) {
-            Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    private static File convertMultipartFileToFile(MultipartFile multipartFile,String fileName) throws IOException {
+        File file = new File("F:\\video\\videoTemp\\"+"uncompressed_"+fileName+".mp4");
+        if (file.exists()) {
+            // 文件已存在，可能需要进行处理
+        } else {
+            // 文件不存在，创建新文件
+            try (InputStream inputStream = multipartFile.getInputStream()) {
+                Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
         }
         return file;
     }
@@ -153,8 +338,8 @@ public class FFmpegUtils {
 
     public static MultipartFile getThumbnailFromMultipartFile(MultipartFile multipartFile) {
         try {
-            File tempFile = convertMultipartFileToFile(multipartFile);
-            String filePath = "F:\\vedio\\videoTemp\\default.jpg";
+            File tempFile = convertMultipartFileToFile(multipartFile,multipartFile.getOriginalFilename());
+            String filePath = "F:\\video\\videoTemp\\default.jpg";
             getTargetThumbnail(tempFile.getAbsolutePath(), filePath);
             File Thumbnail = new File(filePath);
             MultipartFile image = convertFileToMultipartFile(Thumbnail);

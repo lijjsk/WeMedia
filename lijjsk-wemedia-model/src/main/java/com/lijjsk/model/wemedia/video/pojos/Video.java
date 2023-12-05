@@ -92,7 +92,7 @@ public class Video implements Serializable {
     private Date publishTime;
     /**
      * 视频状态，是否可见
-     * 0 待审核 1 审核成功 2 审核失败 3 已发布 4 已下架 5已删除
+     * 0 待审核 1 审核成功 2 审核失败 3 待处理 4处理完成 5 待发布 6已发布 7已删除 8 需要人工审核
      */
     @TableField("status")
     private int status;

@@ -29,13 +29,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>3.0.2</spring-boot.version>
         <spring-cloud-alibaba.version>2022.0.0.0-RC2</spring-cloud-alibaba.version>
+        <spring-cloud.version>4.0.0</spring-cloud.version>
         <mysql.version>8.0.33</mysql.version>
         <mybatis.version>3.5.13</mybatis.version>
         <mybatis.spring.version>3.0.2</mybatis.spring.version>
         <mybatis.plus.version>3.5.4</mybatis.plus.version>
         <junit.version>4.13.2</junit.version>
         <lombok.version>1.18.30</lombok.version>
-        <spring-cloud.version>4.0.0</spring-cloud.version>
         <jackson-core.version>2.15.3</jackson-core.version>
         <jackson-databind.version>2.15.3</jackson-databind.version>
         <slf4j.version>2.0.9</slf4j.version>
@@ -50,6 +50,7 @@
         <minio.version>8.5.7</minio.version>
         <openfeign.version>4.0.4</openfeign.version>
         <loadbalancer.version>4.0.4</loadbalancer.version>
+        <rabbit.version>4.0.4</rabbit.version>
     </properties>
 
     <dependencyManagement>
@@ -109,11 +110,6 @@
                 <version>${spring-boot.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-bootstrap</artifactId>
-                <version>${spring-cloud.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-actuator</artifactId>
                 <version>${spring-boot.version}</version>
@@ -133,17 +129,27 @@
                 <artifactId>spring-boot-autoconfigure</artifactId>
                 <version>${spring-boot.version}</version>
             </dependency>
-            <!--        springCloud alibaba-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-bootstrap</artifactId>
+                <version>${spring-cloud.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-openfeign</artifactId>
-                <version>${openfeign.version}</version>
+                <version>${spring-cloud.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-loadbalancer</artifactId>
-                <version>${loadbalancer.version}</version>
+                <version>${spring-cloud.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
+                <version>${spring-cloud.version}</version>
+            </dependency>
+            <!--        springCloud alibaba-->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-sentinel-datasource</artifactId>

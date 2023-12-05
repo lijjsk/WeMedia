@@ -1,13 +1,11 @@
 package com.minio.file.service.impl;
 
 
+import com.lijjsk.model.common.dtos.OriginalFormatResult;
 import com.minio.file.config.MinIOConfig;
 import com.minio.file.config.MinIOConfigProperties;
 import com.minio.file.service.FileStorageService;
-import io.minio.GetObjectArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.RemoveObjectArgs;
+import io.minio.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -157,6 +155,55 @@ public class MinIOFileStorageService implements FileStorageService {
             throw new RuntimeException("上传视频文件失败");
         }
     }
+
+    /**
+     * 上传视频文件，并记录原文件格式信息
+     *
+     * @param prefix          文件前缀
+     * @param uuid            UUID
+     * @param filename        文件名
+     * @param inputStream     视频文件流
+     * @param originalFormat  原视频文件格式
+     * @return 文件全路径
+     */
+    @Override
+    public String uploadVideoFile(String prefix, String uuid, String filename, InputStream inputStream, String originalFormat) {
+        String filePath = builderFilePathType(prefix, uuid, filename, "video");
+        try {
+            // 构建minio上传参数
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .object(filePath)
+                    .contentType("video/" + originalFormat) // 使用原文件格式设置contentType
+                    .bucket(minIOConfigProperties.getBucket())
+                    .stream(inputStream, inputStream.available(), -1)
+                    .build();
+
+            // 执行文件上传操作
+            minioClient.putObject(putObjectArgs);
+
+            // 获取原对象的元数据
+            StatObjectResponse stat = minioClient.statObject(
+                    StatObjectArgs.builder().bucket(minIOConfigProperties.getBucket()).object(filePath).build());
+
+            // 获取原文件格式
+            String originalContentType = stat.headers().get("Content-Type");
+
+            // 输出元数据信息，方便调试
+            log.info("Original Content-Type: {}", originalContentType);
+
+            // 构建文件访问url
+            StringBuilder urlPath = new StringBuilder(minIOConfigProperties.getReadPath());
+            urlPath.append(separator).append(minIOConfigProperties.getBucket()).append(separator).append(filePath);
+
+            return urlPath.toString();
+        } catch (Exception ex) {
+            log.error("Minio put file error.", ex);
+            throw new RuntimeException("上传视频文件失败");
+        }
+    }
+
+
+
     /**
      * 删除文件
      * @param pathUrl  文件全路径
@@ -182,33 +229,52 @@ public class MinIOFileStorageService implements FileStorageService {
      * 下载文件
      * @param pathUrl  文件全路径
      * @return  文件流
-     *
      */
     @Override
-    public byte[] downLoadFile(String pathUrl)  {
-        String key = pathUrl.replace(minIOConfigProperties.getEndpoint()+"/","");
+    public OriginalFormatResult downLoadFile(String pathUrl)  {
+        String key = pathUrl.replace(minIOConfigProperties.getEndpoint() + "/", "");
         int index = key.indexOf(separator);
-        String bucket = key.substring(0,index);
-        String filePath = key.substring(index+1);
+        String bucket = key.substring(0, index);
+        String filePath = key.substring(index + 1);
+
         InputStream inputStream = null;
         try {
+            // 获取对象元数据
+            StatObjectResponse stat = minioClient.statObject(
+                    StatObjectArgs.builder().bucket(minIOConfigProperties.getBucket()).object(filePath).build());
+
+            // 获取文件的原格式
+            String originalContentType = stat.headers().get("Content-Type");
+
+            // 输出元数据信息，方便调试
+            log.info("Original Content-Type: {}", originalContentType);
+
+            // 下载对象
             inputStream = minioClient.getObject(GetObjectArgs.builder().bucket(minIOConfigProperties.getBucket()).object(filePath).build());
+
+            // 处理文件内容
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byte[] buff = new byte[100];
+            int rc;
+            while ((rc = inputStream.read(buff, 0, 100)) > 0) {
+                byteArrayOutputStream.write(buff, 0, rc);
+            }
+
+//            return byteArrayOutputStream.toByteArray();
+            return new OriginalFormatResult(originalContentType, byteArrayOutputStream.toByteArray());
         } catch (Exception e) {
-            log.error("minio down file error.  pathUrl:{}",pathUrl);
-            e.printStackTrace();
+            log.error("Minio down file error. pathUrl: {}", pathUrl, e);
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] buff = new byte[100];
-        int rc = 0;
-        while (true) {
-            try {
-                if (!((rc = inputStream.read(buff, 0, 100)) > 0)) break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            byteArrayOutputStream.write(buff, 0, rc);
-        }
-        return byteArrayOutputStream.toByteArray();
+        return null;
     }
+
 }

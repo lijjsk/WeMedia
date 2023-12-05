@@ -1,5 +1,7 @@
 package com.minio.file.service;
 
+import com.lijjsk.model.common.dtos.OriginalFormatResult;
+
 import java.io.InputStream;
 
 /**
@@ -35,6 +37,17 @@ public interface FileStorageService {
      * @return 文件全路径
      */
     public String uploadVideoFile(String prefix, String uuid,String filename, InputStream inputStream);
+
+    /**
+     * 上传任意格式的视频文件
+     * @param prefix 文件前缀
+     * @param uuid 视频uuid
+     * @param filename 视频文件名
+     * @param inputStream 视频输入流
+     * @param originalFormat 视频原格式
+     * @return
+     */
+    public String uploadVideoFile(String prefix, String uuid, String filename, InputStream inputStream, String originalFormat);
     /**
      * 删除文件
      * @param pathUrl  文件全路径
@@ -47,6 +60,6 @@ public interface FileStorageService {
      * @return
      *
      */
-    public byte[]  downLoadFile(String pathUrl);
+    public OriginalFormatResult downLoadFile(String pathUrl);
 
 }
