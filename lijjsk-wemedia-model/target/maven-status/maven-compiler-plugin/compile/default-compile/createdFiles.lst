@@ -1,0 +1,5 @@
+com\lijjsk\model\common\dtos\PageResponseResult.class
+com\lijjsk\model\common\dtos\PageRequestDto.class
+com\lijjsk\model\common\enums\AppHttpCodeEnum.class
+com\lijjsk\model\common\dtos\ResponseResult.class
+com\lijjsk\model\common\enums\TaskTypeEnum.class

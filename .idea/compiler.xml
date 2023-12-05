@@ -8,24 +8,24 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="lijjsk-wemedia-gateway" />
-        <module name="lijjsk-wemeida-video" />
-        <module name="lijjsk-minio-demo" />
-        <module name="lijjsk-advertise-login" />
-        <module name="minio-file-starter" />
-        <module name="lijjsk-wemedia-test" />
-        <module name="lijjsk-wemeida-login" />
         <module name="lijjsk-wemedia-common" />
-        <module name="lijjsk-wemedia-schedule" />
+        <module name="lijjsk-wemeida-video" />
         <module name="lijjsk-wemedia-utils" />
-        <module name="lijjsk-manage-login" />
-        <module name="lijjsk-wemedia-openfeign-api" />
+        <module name="lijjsk-wemedia-api" />
+        <module name="lijjsk-wemedia-test" />
         <module name="lijjsk-wemedia-model" />
+        <module name="lijjsk-wemeida-login" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="heima-file-starter" target="18" />
-      <module name="lijjsk-file-starter" target="18" />
+      <module name="lijjsk-advertise-login" target="18" />
+      <module name="lijjsk-manage-login" target="18" />
+      <module name="lijjsk-minio-demo" target="18" />
       <module name="lijjsk-wemedia-login" target="18" />
+      <module name="lijjsk-wemedia-openfeign-api" target="18" />
+      <module name="lijjsk-wemedia-schedule" target="18" />
+      <module name="lijjsk-wemeida-vedio" target="18" />
+      <module name="minio-file-starter" target="18" />
     </bytecodeTargetLevel>
   </component>
 </project>

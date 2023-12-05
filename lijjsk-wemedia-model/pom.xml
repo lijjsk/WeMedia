@@ -54,6 +54,5 @@
             <version>6.0.13</version>
             <scope>compile</scope>
         </dependency>
-
     </dependencies>
 </project>
