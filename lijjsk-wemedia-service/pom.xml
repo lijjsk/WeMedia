@@ -12,12 +12,10 @@
     <artifactId>lijjsk-wemedia-service</artifactId>
     <packaging>pom</packaging>
     <modules>
-
-        <module>lijjsk-wemeida-login</module>
-        <module>lijjsk-advertise-login</module>
-        <module>lijjsk-manage-login</module>
         <module>lijjsk-wemeida-video</module>
         <module>lijjsk-wemedia-schedule</module>
+        <module>lijjsk-wemedia-barrage</module>
+        <module>lijjsk-wemedia-comment</module>
     </modules>
 
     <properties>

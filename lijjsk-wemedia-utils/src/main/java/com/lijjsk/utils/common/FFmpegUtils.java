@@ -100,11 +100,11 @@ public class FFmpegUtils {
             videoAttributes.setSize(new VideoSize(1920, 1080));
 
             // 4. 设置音频属性
-//            AudioAttributes audioAttributes = new AudioAttributes();
-//            audioAttributes.setCodec("aac");
-//            audioAttributes.setBitRate(128000); // 设置音频比特率，可以根据需要进行调整
-//            audioAttributes.setChannels(2);
-//            audioAttributes.setSamplingRate(44100);
+            AudioAttributes audioAttributes = new AudioAttributes();
+            audioAttributes.setCodec("aac");
+            audioAttributes.setBitRate(128000); // 设置音频比特率，可以根据需要进行调整
+            audioAttributes.setChannels(2);
+            audioAttributes.setSamplingRate(44100);
 
             // 5. 创建 MultimediaObject，进行视频压缩
             MultimediaObject multimediaObject = new MultimediaObject(inputFile);
@@ -112,7 +112,7 @@ public class FFmpegUtils {
             encodingAttributes.setOutputFormat("mp4");
             encodingAttributes.setVideoAttributes(videoAttributes);
             //不压缩音频
-            encodingAttributes.setAudioAttributes(null);
+            encodingAttributes.setAudioAttributes(audioAttributes);
 
             Encoder encoder = new Encoder();
             encoder.encode(multimediaObject, outputFile, encodingAttributes);

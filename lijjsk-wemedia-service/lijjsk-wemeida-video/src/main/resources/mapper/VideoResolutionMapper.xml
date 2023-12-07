@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lijjsk.video.mapper.VideoResolutionMapper">
+
+    <resultMap id="videoResolutionResultMap" type="com.lijjsk.model.wemedia.video.pojos.VideoResolution">
+        <!-- 在这里定义 VideoResolution 实体类的属性与数据库表字段的映射关系 -->
+        <id property="id" column="id" />
+        <result property="videoId" column="video_id" />
+        <result property="type" column="type" />
+        <!-- 其他属性映射 -->
+    </resultMap>
+
+    <select id="getVideoResolution" resultMap="videoResolutionResultMap">
+        SELECT * FROM video_resolution
+        WHERE video_id = #{videoId} AND type = #{type}
+    </select>
+
+</mapper>
+

@@ -3,6 +3,7 @@ package com.lijjsk.video.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.common.enums.AppHttpCodeEnum;
+import com.lijjsk.model.wemedia.video.dtos.VideoBriefDto;
 import com.lijjsk.model.wemedia.video.pojos.Video;
 import com.lijjsk.utils.common.FFmpegUtils;
 import com.lijjsk.video.mapper.VideoMapper;
@@ -97,7 +98,8 @@ public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> imple
         //从principal中获取当前登录用户的信息
         video.setUserId(userId);
         save(video);
-        return ResponseResult.okResult(video);
+        VideoBriefDto videoBriefDto = new VideoBriefDto(video);
+        return ResponseResult.okResult(videoBriefDto);
     }
 
 
@@ -133,7 +135,8 @@ public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> imple
             video.setCoverUrl(imageUrl);
             updateById(video);
             rabbitTemplate.convertAndSend("video-review-queue", video.getId());
-            return ResponseResult.okResult(video);
+            VideoBriefDto videoBriefDto = new VideoBriefDto(video);
+            return ResponseResult.okResult(videoBriefDto);
         }
     }
 }
