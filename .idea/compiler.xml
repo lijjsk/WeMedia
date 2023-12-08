@@ -12,13 +12,15 @@
         <module name="lijjsk-minio-demo" />
         <module name="lijjsk-wemedia-api" />
         <module name="minio-file-starter" />
-        <module name="lijjsk-wemedia-test" />
+        <module name="lijjsk-wemedia-statistics" />
         <module name="lijjsk-wemedia-barrage" />
         <module name="lijjsk-wemedia-comment" />
         <module name="lijjsk-wemedia-common" />
         <module name="lijjsk-wemedia-schedule" />
+        <module name="lijjsk-wemedia-user" />
         <module name="lijjsk-wemedia-utils" />
         <module name="lijjsk-wemedia-openfeign-api" />
+        <module name="lijjsk-kafka-demo" />
         <module name="lijjsk-wemedia-model" />
       </profile>
     </annotationProcessing>

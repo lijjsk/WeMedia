@@ -19,6 +19,7 @@
         <module>lijjsk-wemedia-model</module>
         <module>lijjsk-wemedia-basic/minio-file-starter</module>
         <module>lijjsk-wemedia-test/lijjsk-minio-demo</module>
+        <module>lijjsk-wemedia-test/lijjsk-kafka-demo</module>
     </modules>
 
     <properties>

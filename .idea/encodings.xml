@@ -27,12 +27,18 @@
     <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemedia-login/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemedia-schedule/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemedia-schedule/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemedia-statistics/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemedia-statistics/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemedia-user/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemedia-user/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemeida-user/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemeida-user/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemeida-video/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemeida-video/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lijjsk-wemedia-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lijjsk-wemedia-test/lijjsk-kafka-demo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lijjsk-wemedia-test/lijjsk-kafka-demo/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lijjsk-wemedia-test/lijjsk-minio-demo/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lijjsk-wemedia-test/lijjsk-minio-demo/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lijjsk-wemedia-test/src/main/java" charset="UTF-8" />
