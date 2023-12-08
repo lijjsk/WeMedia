@@ -221,11 +221,11 @@
                 <version>${swagger.version}</version>
             </dependency>
 <!--            knife4j-->
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-boot-starter</artifactId>
-                <version>${knife4j.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>com.github.xiaoymin</groupId>-->
+<!--                <artifactId>knife4j-spring-boot-starter</artifactId>-->
+<!--                <version>${knife4j.version}</version>-->
+<!--            </dependency>-->
             <!--        数据库连接包-->
             <dependency>
                 <groupId>com.mysql</groupId>
