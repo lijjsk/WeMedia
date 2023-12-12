@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="lijjsk-wemedia-gateway" />
         <module name="lijjsk-wemeida-video" />
+        <module name="lijjsk-wemedia-chat" />
         <module name="lijjsk-minio-demo" />
         <module name="lijjsk-wemedia-api" />
         <module name="minio-file-starter" />

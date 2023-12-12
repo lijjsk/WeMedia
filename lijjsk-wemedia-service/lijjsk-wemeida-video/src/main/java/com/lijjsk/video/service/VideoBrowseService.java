@@ -2,6 +2,7 @@ package com.lijjsk.video.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lijjsk.model.common.dtos.ResponseResult;
+import com.lijjsk.model.statistics.bos.VideoData;
 import com.lijjsk.model.wemedia.video.pojos.Video;
 
 public interface VideoBrowseService extends IService<Video> {
@@ -55,4 +56,11 @@ public interface VideoBrowseService extends IService<Video> {
      * @return
      */
     public ResponseResult addVideoShareNum(Integer videoId);
+
+    /**
+     * 更新视频数据
+     * @param videoData
+     * @return
+     */
+    public ResponseResult updateVideoData(VideoData videoData);
 }

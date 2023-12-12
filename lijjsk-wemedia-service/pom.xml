@@ -18,6 +18,7 @@
         <module>lijjsk-wemedia-comment</module>
         <module>lijjsk-wemedia-statistics</module>
         <module>lijjsk-wemedia-user</module>
+        <module>lijjsk-wemedia-chat</module>
     </modules>
 
     <properties>
@@ -62,6 +63,14 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
