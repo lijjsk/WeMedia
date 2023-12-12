@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lijjsk.user.mapper.UserMapper">
+    <resultMap id="UserResultMap" type="user">
+        <!--column表示数据库查询结果集中的列名或别名-->
+        <!--property表示对应于实体类中的属性名-->
+        <id column="roleId" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="age" property="age"/>
+        <result column="sex" property="sex"/>
+        <result column="signature" property="signature"/>
+        <result column="profile_photo" property="profilePhoto"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="state" property="state"/>
+        <result column="sum_followed" property="sumFollowed"/>
+        <result column="sum_following" property="sumFollowing"/>
+        <collection property="identitySet" resultMap="identityResultMap"/>
+    </resultMap>
+
+    <resultMap id="identityResultMap" type="identity">
+        <id column="roleId" property="id"/>
+        <result column="name" property="name"/>
+    </resultMap>
+
+    <select id="selectUserByUsername" resultMap="UserResultMap" resultType="User">
+        select u.id as userId,
+               u.username,
+               u.password,
+               u.age,
+               u.sex,
+               u.signature,
+               u.profile_photo,
+               u.phone,
+               u.email,
+               u.state,
+               i.id as roleId,
+               i.name
+        FROM user u
+                 left join user_identity ui on u.id = ui.user_id
+                 left join identity i on ui.identity_id = i.id
+        where username = #{name}
+          and u.state = 0
+    </select>
+    <select id="selectUserPasswordById">
+        select user.password
+        from user
+        where user.id = #{userId}
+    </select>
+    <insert id="followUser">
+        insert into follow(following_id, followed_id)
+        values (#{following_id}, #{followed_id})
+    </insert>
+    <delete id="unfollowUser">
+        delete
+        from follow
+        where following_id = #{following_id}
+          and followed_id = #{followed_id}
+    </delete>
+    <update id="updateUserByFollowedId">
+        <if test="type">
+            update user set user.sum_followed = user.sum_followed+1 where user.id=#{followed_id}
+        </if>
+        <if test="!type">
+            update user set user.sum_followed = user.sum_followed-1 where user.id=#{followed_id}
+        </if>
+
+    </update>
+    <update id="updateUserByFollowingId">
+        <if test="type">
+            update user set user.sum_following = user.sum_following+1 where user.id=#{following_id}
+        </if>
+        <if test="!type">
+            update user set user.sum_following = user.sum_following-1 where user.id=#{following_id}
+        </if>
+
+    </update>
+    <update id="updateUser">
+        update user u
+        set u.username=#{user.username},
+            u.age=#{user.age},
+            u.sex=#{user.sex},
+            u.signature=#{user.signature},
+            u.profile_photo=#{user.profilePhoto},
+            u.phone=#{user.phone},
+            u.email=#{user.email},
+            u.state=#{user.state},
+            u.sum_followed=#{user.sumFollowed},
+            u.sum_following =#{user.sumFollowing}
+        where u.id = #{user.id}
+    </update>
+    <update id="updateUserPasswordById">
+        update user
+        set user.password=#{password}
+        where user.id = #{userId}
+    </update>
+</mapper>
