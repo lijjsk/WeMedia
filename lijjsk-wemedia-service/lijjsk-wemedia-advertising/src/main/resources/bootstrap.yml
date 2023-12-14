@@ -1,0 +1,12 @@
+server:
+  port: 51707
+spring:
+  application:
+    name: wemedia-advertising
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.200.145:8848
+      config:
+        server-addr: 192.168.200.145:8848
+        file-extension: yml

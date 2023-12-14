@@ -27,4 +27,12 @@ public class CommentController {
     public ResponseResult getComment(@RequestParam Integer videoId){
         return commentService.getCommentList(videoId);
     }
+    @PutMapping("/like/comment")
+    public ResponseResult likeComment(@RequestParam("commentId") Integer commentId){
+        return commentService.likeComment(commentId);
+    }
+    @PutMapping("/dislike/comment")
+    public ResponseResult dislikeComment(@RequestParam("commentId") Integer commentId){
+        return commentService.dislikeComment(commentId);
+    }
 }

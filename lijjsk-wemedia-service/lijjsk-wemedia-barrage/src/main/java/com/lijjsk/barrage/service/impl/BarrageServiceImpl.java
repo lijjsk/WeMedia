@@ -1,17 +1,25 @@
 package com.lijjsk.barrage.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lijjsk.apis.video.IVideoClient;
 import com.lijjsk.barrage.mapper.BarrageMapper;
 import com.lijjsk.barrage.service.BarrageService;
 import com.lijjsk.common.constants.CommonConstants;
+import com.lijjsk.common.constants.EventConstants;
+import com.lijjsk.common.constants.VideoConstants;
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.common.enums.AppHttpCodeEnum;
+import com.lijjsk.model.statistics.bos.VideoEvent;
 import com.lijjsk.model.wemedia.barrage.dtos.BarrageDto;
 import com.lijjsk.model.wemedia.barrage.pojos.Barrage;
+import com.lijjsk.model.wemedia.video.pojos.Video;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,14 +30,14 @@ public class BarrageServiceImpl extends ServiceImpl<BarrageMapper, Barrage> impl
     @Autowired
     private BarrageMapper barrageMapper;
     @Autowired
-    private IVideoClient videoClient;
+    private KafkaTemplate<String, String> kafkaTemplate;
     /**
      * 保存弹幕
      * @param barrageDto
      * @return
      */
     @Override
-    public ResponseResult saveBarrage(BarrageDto barrageDto) {
+    public ResponseResult saveBarrage(BarrageDto barrageDto){
         if (barrageDto == null){
             return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
         } else if (barrageDto.getContent() == null) {
@@ -42,7 +50,17 @@ public class BarrageServiceImpl extends ServiceImpl<BarrageMapper, Barrage> impl
         barrage.setIsShow(CommonConstants.SHOW);
         save(barrage);
         //增加视频的弹幕数
-        videoClient.addVideoBarrageNum(barrage.getVideoId());
+        VideoEvent videoEvent = new VideoEvent();
+        videoEvent.setVideoId(barrage.getVideoId());
+        videoEvent.setCreatedTime(new Date());
+        videoEvent.setType(EventConstants.BARRAGE);
+        ObjectMapper objectMapper = new ObjectMapper();
+        try{
+            kafkaTemplate.send("add_comment_topic",objectMapper.writeValueAsString(videoEvent));
+        }catch (JsonProcessingException e){
+            log.error("增加弹幕消息发送失败");
+            e.printStackTrace();
+        }
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
@@ -52,7 +70,7 @@ public class BarrageServiceImpl extends ServiceImpl<BarrageMapper, Barrage> impl
      * @return
      */
     @Override
-    public ResponseResult deleteBarrage(Integer barrageId) {
+    public ResponseResult deleteBarrage(Integer barrageId){
         if (barrageId == null){
             return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
         }
@@ -60,6 +78,19 @@ public class BarrageServiceImpl extends ServiceImpl<BarrageMapper, Barrage> impl
         //设置当前弹幕为不可见
         barrage.setIsShow(CommonConstants.DO_NOT_SHOW);
         updateById(barrage);
+        //减少视频的弹幕数
+        VideoEvent videoEvent = new VideoEvent();
+        videoEvent.setVideoId(barrage.getVideoId());
+        videoEvent.setCreatedTime(new Date());
+        videoEvent.setType(EventConstants.BARRAGE);
+        ObjectMapper objectMapper = new ObjectMapper();
+        try{
+            kafkaTemplate.send("reduce_barrage_topic",objectMapper.writeValueAsString(videoEvent));
+        }catch (JsonProcessingException e){
+            log.error("删除弹幕消息发送失败");
+            e.printStackTrace();
+        }
+
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 

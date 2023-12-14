@@ -19,6 +19,10 @@ public class VideoDto {
      */
     private String type;
     /**
+     * 视频所属用户名id
+     */
+    private Integer userId;
+    /**
      * 所属用户名
      */
     private String username;
@@ -58,6 +62,10 @@ public class VideoDto {
      * 总弹幕量
      */
     private int sumDanMu;
+    /**
+     * 总收入
+     */
+    private Double income;
     /**
      * 视频发布时间
      */

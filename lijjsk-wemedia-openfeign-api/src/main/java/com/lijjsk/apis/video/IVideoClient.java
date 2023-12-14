@@ -1,6 +1,9 @@
 package com.lijjsk.apis.video;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.lijjsk.model.common.dtos.ResponseResult;
+import com.lijjsk.model.statistics.bos.VideoData;
+import com.lijjsk.model.statistics.bos.VideoEvent;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,4 +56,12 @@ public interface IVideoClient {
      */
     @PostMapping("/api/v1/video/add/share/{videoId}")
     public ResponseResult addVideoShareNum(@PathVariable("videoId") Integer videoId);
+
+    /**
+     * 更新视频数据
+     * @param videoData
+     * @return
+     */
+    @PostMapping("/api/v1/video/update/barrage")
+    public ResponseResult updateVideoData(@RequestBody VideoData videoData);
 }
