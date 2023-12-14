@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.DataOutput;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
@@ -80,6 +81,11 @@ public class Video implements Serializable {
      */
     @TableField("sum_danmu")
     private int sumDanMu;
+    /**
+     * 总收入
+     */
+    @TableField("income")
+    private Double income;
     /**
      * 总视频长度：分钟
      */

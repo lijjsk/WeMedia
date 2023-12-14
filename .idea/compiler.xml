@@ -7,12 +7,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="lijjsk-wemedia-gateway" />
         <module name="lijjsk-wemeida-video" />
         <module name="lijjsk-wemedia-chat" />
         <module name="lijjsk-minio-demo" />
+        <module name="lijjsk-wemedia-client-gateway" />
+        <module name="lijjsk-wemedia-manage" />
         <module name="lijjsk-wemedia-api" />
+        <module name="lijjsk-wemedia-advertising" />
         <module name="minio-file-starter" />
+        <module name="lijjsk-wemedia-advertising-gateway" />
         <module name="lijjsk-wemedia-statistics" />
         <module name="lijjsk-wemedia-barrage" />
         <module name="lijjsk-wemedia-comment" />
@@ -23,6 +26,8 @@
         <module name="lijjsk-wemedia-openfeign-api" />
         <module name="lijjsk-kafka-demo" />
         <module name="lijjsk-wemedia-model" />
+        <module name="lijjsk-wemedia-authentication" />
+        <module name="lijjsk-wemedia-management-gateway" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

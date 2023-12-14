@@ -10,16 +10,6 @@ import com.lijjsk.user.pojo.User;
 public interface IUserService extends IService<User> {
 
     /**
-     * 登录服务
-     */
-    String login(     UserRequestDto userRequestDto);
-
-    /**
-     * 权限认定服务，供远程调用
-     */
-    Boolean authority_judge(String token, String uri);
-
-    /**
      * 用户添加，注册
      */
     Boolean addUser(User user);

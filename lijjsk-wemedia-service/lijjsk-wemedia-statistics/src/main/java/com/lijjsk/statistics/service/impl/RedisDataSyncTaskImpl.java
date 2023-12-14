@@ -64,7 +64,7 @@ public class RedisDataSyncTaskImpl implements RedisDataSyncTask {
         videoData.setSumShare((int) videoDataMap.getOrDefault("share", 0));
         videoData.setSumView((int) videoDataMap.getOrDefault("views", 0));
         videoData.setSumDanMu((int) videoDataMap.getOrDefault("barrage", 0));
-
+        videoData.setIncome(videoData.getSumView() * 0.002);
         return videoData;
     }
 }

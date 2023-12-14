@@ -31,14 +31,22 @@ public class VideoTaskServiceImpl implements VideoTaskService {
      */
     @Override
     public void addVideoPublishToTask(Integer id, Date publishTime) {
-
+        log.info("添加任务到延迟服务中——————begin");
+        Task task = new Task();
+        task.setExecuteTime(publishTime.getTime());
+        task.setTaskType(TaskTypeEnum.VIDEO_PUBLISH_TIME.getTaskType());
+        task.setPriority(TaskTypeEnum.VIDEO_PUBLISH_TIME.getPriority());
+        Video video = new Video();
+        video.setId(id);
+        task.setParameters(ProtostuffUtil.serialize(video));
+        scheduleClient.addTask(task);
     }
 
     /**
      * 消费任务 发布视频
      */
     @Override
-    //@Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 1000)
     public void publishVideoByTask() {
         log.info("消费任务，发布视频");
         ResponseResult responseResult = scheduleClient.pull(TaskTypeEnum.VIDEO_PUBLISH_TIME.getTaskType(), TaskTypeEnum.VIDEO_PUBLISH_TIME.getPriority());

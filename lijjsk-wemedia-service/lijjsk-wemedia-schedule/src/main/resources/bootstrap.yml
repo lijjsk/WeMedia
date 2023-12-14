@@ -1,5 +1,5 @@
 server:
-  port: 51701
+  port: 51710
 spring:
   application:
     name: wemedia-schedule

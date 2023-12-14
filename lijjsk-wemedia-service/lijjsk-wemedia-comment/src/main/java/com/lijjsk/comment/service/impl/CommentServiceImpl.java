@@ -40,7 +40,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     @Override
     public ResponseResult saveComment(CommentDto commentDto) {
         if (commentDto == null){
-            return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
         }else if(commentDto.getContent() == null){
             return ResponseResult.errorResult(500,"评论不能为空");
         }
@@ -76,7 +76,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     @Override
     public ResponseResult deleteComment(Integer commentId) {
         if (commentId == null){
-            return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
         }
         Comment comment = getById(commentId);
         //设置当前弹幕为不可见
@@ -106,9 +106,42 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     @Override
     public ResponseResult getCommentList(Integer videoId) {
         if (videoId == null){
-            return ResponseResult.okResult(AppHttpCodeEnum.DATA_NOT_EXIST);
+            return ResponseResult.okResult(AppHttpCodeEnum.PARAM_INVALID);
         }
         List<Comment> commentList = commentMapper.getCommentListByVideoId(videoId);
         return ResponseResult.okResult(commentList);
+    }
+
+    /**
+     * 点赞评论
+     *
+     * @param commentId
+     * @return
+     */
+    @Override
+    public ResponseResult likeComment(Integer commentId) {
+        if (commentId == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
+        }
+        Comment comment = getById(commentId);
+        comment.setSumLike(comment.getSumLike()+1);
+        updateById(comment);
+        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
+    }
+
+    /**
+     * 取消点赞，或者点踩
+     * @param commentId
+     * @return
+     */
+    @Override
+    public ResponseResult dislikeComment(Integer commentId) {
+        if (commentId == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
+        }
+        Comment comment = getById(commentId);
+        comment.setSumLike(comment.getSumLike()-1);
+        updateById(comment);
+        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 }

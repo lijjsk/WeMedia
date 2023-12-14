@@ -28,36 +28,6 @@ public class UserController {
     IUserService userService;
 
     /**
-     * 登录方法
-     * @param userRequestDto
-     */
-    @PostMapping("/login")
-    public ResponseResult Login(@RequestBody UserRequestDto userRequestDto) {
-        String token = userService.login(userRequestDto);
-        Map<String, String> map = new HashMap<>();
-        if(token!=null){
-            map.put("token", token);
-            return new ResponseResult(200,"登录成功",map);
-        }else {
-            return ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_PASSWORD_ERROR);
-        }
-    }
-
-    /**
-     * 根据token解析得到用户权限，进行鉴权
-     * token是用户身份信息，uri是访问路径
-     * 用于进程间通信
-     */
-    @PostMapping("/authority_judge")
-    public ResponseResult authority_judge(String token, String uri) {
-        Boolean rs = userService.authority_judge(token, uri);
-        if (rs) {
-            return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
-        } else {
-            return ResponseResult.errorResult(AppHttpCodeEnum.TOKEN_INVALID);
-        }
-    }
-    /**
      * 用户根据信息注册
      */
     @PostMapping("/register")

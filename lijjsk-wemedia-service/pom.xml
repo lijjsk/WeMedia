@@ -19,6 +19,9 @@
         <module>lijjsk-wemedia-statistics</module>
         <module>lijjsk-wemedia-user</module>
         <module>lijjsk-wemedia-chat</module>
+        <module>lijjsk-wemedia-advertising</module>
+        <module>lijjsk-wemedia-authentication</module>
+        <module>lijjsk-wemedia-manage</module>
     </modules>
 
     <properties>

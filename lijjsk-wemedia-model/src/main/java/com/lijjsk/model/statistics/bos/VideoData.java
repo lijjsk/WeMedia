@@ -31,5 +31,9 @@ public class VideoData {
      * 总弹幕量
      */
     private int sumDanMu;
+    /**
+     * 总收入
+     */
+    private Double income;
 
 }

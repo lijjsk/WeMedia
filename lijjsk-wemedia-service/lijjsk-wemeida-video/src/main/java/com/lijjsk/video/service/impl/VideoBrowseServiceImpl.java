@@ -62,6 +62,7 @@ public class VideoBrowseServiceImpl extends ServiceImpl<VideoMapper, Video> impl
         BeanUtils.copyProperties(video,videoDto);
         VideoResolution videoResolution = videoResolutionMapper.getVideoResolution(video.getId().toString(), "1080p60hz");
         BeanUtils.copyProperties(videoResolution,videoDto);
+        videoDto.setUserId(userMapper.selectById(video.getUserId()).getId());
         videoDto.setUsername(userMapper.selectById(video.getUserId()).getUsername());
         addVideoViewNum(videoId);
         return ResponseResult.okResult(videoDto);

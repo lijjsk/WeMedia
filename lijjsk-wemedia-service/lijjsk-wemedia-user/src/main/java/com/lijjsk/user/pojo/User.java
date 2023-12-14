@@ -4,10 +4,6 @@ package com.lijjsk.user.pojo;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
@@ -18,7 +14,7 @@ import java.util.stream.Collectors;
 @TableName(value = "user")//指定表名
 //@ConfigurationProperties(prefix = "user1")
 //SpringSecurity会将认证的用户存到UserDetails中
-public class User implements Serializable, UserDetails {
+public class User implements Serializable{
     @TableId(value = "id")
     private Integer id;
     private String username;
@@ -42,42 +38,4 @@ public class User implements Serializable, UserDetails {
     //权限信息
     private Set<String> menus;
 
-    /**
-     * SpringSecurity根据getAuthorities获取用户的权限信息
-     * @return
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        //权限告知SpringSecurity
-        //lambda表达式将Set<String>=》collection<GrantedAuthority>
-        if(menus !=null&& !menus.isEmpty()) {
-            return menus.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
-        }
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return state==0;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return state==0;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return state==0;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return state==0;
-    }
 }
