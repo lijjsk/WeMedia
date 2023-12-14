@@ -36,6 +36,8 @@ public class User implements Serializable, UserDetails {
 
     //@TableLogic可以设置逻辑删除
     private Integer state;
+    //是否私密账号
+    private Boolean isSecret;
 
     //角色信息
     private Set<Identity> identitySet;
@@ -63,21 +65,21 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return state==0;
+        return state==1;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return state==0;
+        return state==1;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return state==0;
+        return state==1;
     }
 
     @Override
     public boolean isEnabled() {
-        return state==0;
+        return state==1;
     }
 }

@@ -52,6 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("token=============>{}",token);
         Claims claims=null;
         try{
+            //解析token
             claims = jwtUtils.parseToken(token);
         }catch (SignatureException e){
             //验签出错会导致乱码，设置格式

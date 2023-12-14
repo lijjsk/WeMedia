@@ -2,6 +2,7 @@ package com.lijjsk.user.config;
 
 
 import com.lijjsk.user.Web.Filter.JwtAuthenticationFilter;
+import com.lijjsk.user.Web.Filter.UserStatusCheckFilter;
 import com.lijjsk.user.Web.Manager.SttAuthorizationManager;
 import com.lijjsk.user.Web.MyUserDetailsService;
 import jakarta.annotation.Resource;
@@ -31,6 +32,9 @@ public class WebSecurityConfig {
     //jwt过滤器
     @Resource
     JwtAuthenticationFilter jwtAuthenticationFilter;
+    //用户状态过滤器
+    @Resource
+    UserStatusCheckFilter userStatusCheckFilter;
     //自定义从数据库获取用户信息
     @Resource
     MyUserDetailsService myUserDetailsService;
@@ -52,7 +56,8 @@ public class WebSecurityConfig {
                         .anyRequest().access(sttAuthorizationManager)
         );
         //将jwt过滤器添加到过滤器链中
-        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(userStatusCheckFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
     /**
