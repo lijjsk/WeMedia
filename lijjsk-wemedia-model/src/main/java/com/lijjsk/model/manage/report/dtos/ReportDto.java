@@ -5,6 +5,10 @@ import lombok.Data;
 @Data
 public class ReportDto {
     /**
+     * 举报id
+     */
+    private Integer id;
+    /**
      * 举报用户id
      */
     private Integer userId;

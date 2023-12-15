@@ -36,4 +36,14 @@ public class ReportResult {
      */
     @TableField(value = "process_time")
     public Date processTime;
+    /**
+     * 是否删除
+     */
+    @TableField(value = "is_delete")
+    private Integer isDelete;
+    /**
+     * 举报返回结果类型
+     */
+    @TableField(value = "type")
+    private Integer type;
 }
