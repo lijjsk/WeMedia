@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lijjsk.user.mapper.MenuMapper">
-    <select id="getMenusByUserId" resultType="menu">
+    <select id="getMenusByUserId" resultType="com.lijjsk.user.pojo.Menu">
         select m.*
         from menu as m
                  left join identity_menu as ident_menu on m.id = ident_menu.menu_id
@@ -12,7 +12,7 @@
                  left join user as us on us.id = us_ident.user_id
         where us.id = #{userId}
     </select>
-    <select id="selectMenuByURI" resultType="menu">
+    <select id="selectMenuByURI" resultType="com.lijjsk.user.pojo.Menu">
         select *
         from menu
         where path=#{uri}

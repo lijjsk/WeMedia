@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/lijjsk-wemedia-user.iml" filepath="$PROJECT_DIR$/lijjsk-wemedia-user.iml" />
       <module fileurl="file://$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemeida-video/lijjsk-wemedia-video.iml" filepath="$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemeida-video/lijjsk-wemedia-video.iml" />
     </modules>
   </component>

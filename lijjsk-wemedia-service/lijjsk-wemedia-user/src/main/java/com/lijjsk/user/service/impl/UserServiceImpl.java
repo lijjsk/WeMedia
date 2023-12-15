@@ -1,11 +1,9 @@
 package com.lijjsk.user.service.impl;
 
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lijjsk.model.wemedia.user.dtos.*;
-import com.lijjsk.user.mapper.IdentityMapper;
+import com.lijjsk.model.wemedia.user.dtos.UserPasswordChangeDto;
+import com.lijjsk.model.wemedia.user.dtos.UserRequestDto;
+import com.lijjsk.model.wemedia.user.dtos.UserResponseDto;
 import com.lijjsk.user.mapper.MenuMapper;
 import com.lijjsk.user.mapper.UserMapper;
 import com.lijjsk.user.pojo.Identity;
@@ -20,39 +18,29 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
+import com.lijjsk.model.wemedia.user.dtos.FollowRequestDto;
 import java.util.*;
 
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
-    @Resource
-    private PasswordEncoder encoder;
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     @Resource
     MenuMapper menuMapper;
     @Resource
     UserMapper userMapper;
     @Resource
-    IdentityMapper identityMapper;
-    @Resource
     private AuthenticationManager authenticationManager;
     @Resource
     private JwtUtils jwtUtils;
-
-    private final LambdaUpdateWrapper<User> lambdaUpdateWrapper=new LambdaUpdateWrapper<User>();
-    private final LambdaQueryWrapper<Identity> lambdaQueryWrapper=new LambdaQueryWrapper<Identity>();
-
-    private final static String initPassword = "handsome@123";
 
     /**
      * 登录，查询权限
      */
     @Override
-    public Map<String, Object> login(UserRequestDto userRequestDto) {
-
+    public String login(UserRequestDto userRequestDto) {
         //传入用户名，密码
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(userRequestDto.getUsername(), userRequestDto.getPassword());
@@ -73,21 +61,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return null;
         }
         //根据用户信息生成token
-        Map<String, Object> tokenmap = new HashMap<>();
-        tokenmap.put("用户Id", user.getId());
-        tokenmap.put("用户Name", user.getUsername());
-        tokenmap.put("用户身份", user.getIdentitySet());
-        tokenmap.put("用户权限", user.getMenus());
-        tokenmap.put("用户状态", user.getState());
-
-        //存储用户信息的map
-        Map<String, Object> userMap = new HashMap<>();
-        log.info("用户map==============================={}", tokenmap);
-        //获取并存储用户个人信息
-        userMap.put("userInfo", user);
-        //存储token
-        userMap.put("token", jwtUtils.creatToken(tokenmap));
-        return userMap;
+        Map<String, Object> map = new HashMap<>();
+        map.put("用户Id", user.getId());
+        map.put("用户Name", user.getUsername());
+        map.put("用户身份", user.getIdentitySet());
+        map.put("用户权限", user.getMenus());
+        return jwtUtils.creatToken(map);
     }
 
     /**
@@ -208,118 +187,5 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return userMapper.updateUserPasswordById(nextPassword, userId);
         }
         return false;
-    }
-
-    /**
-     * 获取用户的粉丝列表
-     *
-     * @param userId
-     */
-    @Override
-    public List<UserFollowResponseDto> selectUserFollowedListById(Integer userId) {
-        return userMapper.selectUserFollowedListById(userId);
-    }
-
-    /**
-     * 获取用户的关注列表
-     *
-     * @param userId
-     */
-    @Override
-    public List<UserFollowResponseDto> selectUserFollowingListById(Integer userId) {
-        return userMapper.selectUserFollowingListById(userId);
-    }
-
-    /**
-     * 用户设置为禁言状态
-     */
-    @Override
-    public Boolean setUserMUTED(Integer userId) {
-        lambdaUpdateWrapper.eq(User::getId, userId);
-        lambdaUpdateWrapper.set(User::getState, 3);
-
-        return userMapper.update(lambdaUpdateWrapper) != 0;
-    }
-
-    /**
-     * 解除禁言用户
-     */
-    @Override
-    public Boolean setUserUnMUTED(Integer userId) {
-        lambdaUpdateWrapper.eq(User::getId, userId);
-        lambdaUpdateWrapper.set(User::getState, 1);
-        return userMapper.update(lambdaUpdateWrapper) != 0;
-    }
-
-    /**
-     * 冻结用户
-     */
-    @Override
-    public Boolean setUserBANNED(Integer userId) {
-        lambdaUpdateWrapper.eq(User::getId, userId);
-        lambdaUpdateWrapper.set(User::getState, 2);
-        return userMapper.update(lambdaUpdateWrapper) != 0;
-    }
-
-    /**
-     * 解冻用户
-     */
-    @Override
-    public Boolean setUserUnBANNED(Integer userId) {
-        lambdaUpdateWrapper.eq(User::getId, userId);
-        lambdaUpdateWrapper.set(User::getState, 1);
-        return userMapper.update(lambdaUpdateWrapper) != 0;
-    }
-
-    /**
-     * 用户重置密码
-     */
-    @Override
-    public Boolean resetPassword(Integer userId) {
-        lambdaUpdateWrapper.eq(User::getId, userId);
-        log.info("用户重置密码============================={}", initPassword);
-        lambdaUpdateWrapper.set(User::getPassword, encoder.encode(initPassword));
-        return userMapper.update(lambdaUpdateWrapper) != 0;
-    }
-
-    /**
-     * 用户获得会员权限
-     */
-    @Override
-    public Boolean getVIPIdentity(Integer userId, Integer identityId) {
-        return userMapper.addUserIdentity(userId, identityId);
-    }
-
-    /**
-     * 用户去除会员权限
-     */
-    @Override
-    public Boolean removeVIPIdentity(Integer userId, Integer identityId) {
-        return userMapper.removeUserIdentity(userId, identityId);
-    }
-
-    /**
-     * 用户获得大会员权限
-     */
-    @Override
-    public Boolean getSuperVIP(Integer userId, Integer identityId) {
-        return userMapper.addUserIdentity(userId, identityId);
-    }
-
-    /**
-     * 用户去除大会员权限
-     */
-    @Override
-    public Boolean removeSuperVIP(Integer userId, Integer identityId) {
-        return userMapper.removeUserIdentity(userId, identityId);
-    }
-
-    /**
-     * 获取身份列表
-     * @return
-     */
-    @Override
-    public List<Identity> getIdentityList() {
-        return identityMapper.selectList(lambdaQueryWrapper.select());
     }
 }
