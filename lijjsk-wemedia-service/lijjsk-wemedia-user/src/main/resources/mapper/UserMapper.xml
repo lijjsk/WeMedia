@@ -3,10 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lijjsk.user.mapper.UserMapper">
-    <resultMap id="UserResultMap" type="com.lijjsk.user.pojo.User">
+    <resultMap id="UserResultMap" type="user">
         <!--column表示数据库查询结果集中的列名或别名-->
         <!--property表示对应于实体类中的属性名-->
-        <id column="roleId" property="id"/>
+        <id column="userId" property="id"/>
         <result column="username" property="username"/>
         <result column="password" property="password"/>
         <result column="age" property="age"/>
@@ -18,15 +18,16 @@
         <result column="state" property="state"/>
         <result column="sum_followed" property="sumFollowed"/>
         <result column="sum_following" property="sumFollowing"/>
+        <result column="is_secret" property="isSecret"/>
         <collection property="identitySet" resultMap="identityResultMap"/>
     </resultMap>
 
-    <resultMap id="identityResultMap" type="com.lijjsk.user.pojo.Identity">
+    <resultMap id="identityResultMap" type="identity">
         <id column="roleId" property="id"/>
         <result column="name" property="name"/>
     </resultMap>
 
-    <select id="selectUserByUsername" resultMap="UserResultMap" resultType="com.lijjsk.user.pojo.User">
+    <select id="selectUserByUsername" resultMap="UserResultMap" resultType="User">
         select u.id as userId,
                u.username,
                u.password,
@@ -37,18 +38,44 @@
                u.phone,
                u.email,
                u.state,
+               u.sum_followed,
+               u.sum_following,
+               u.is_secret,
                i.id as roleId,
                i.name
         FROM user u
                  left join user_identity ui on u.id = ui.user_id
                  left join identity i on ui.identity_id = i.id
-        where username = #{name}
-          and u.state = 0
+        where u.username = #{name}
     </select>
     <select id="selectUserPasswordById">
         select user.password
         from user
         where user.id = #{userId}
+    </select>
+    <select id="selectUserFollowedListById">
+        select us.id,
+               us.username,
+               us.sex,
+               us.signature,
+               us.profile_photo
+        from user us
+        where us.id in (select f.following_id
+                        from user u
+                                 left join follow f on f.followed_id = u.id
+                        where u.id = #{userId})
+    </select>
+    <select id="selectUserFollowingListById">
+        select us.id,
+               us.username,
+               us.sex,
+               us.signature,
+               us.profile_photo
+        from user us
+        where us.id in (select f.followed_id
+                        from user u
+                                 left join follow f on f.following_id = u.id
+                        where u.id = #{userId})
     </select>
     <insert id="followUser">
         insert into follow(following_id, followed_id)
@@ -89,7 +116,8 @@
             u.email=#{user.email},
             u.state=#{user.state},
             u.sum_followed=#{user.sumFollowed},
-            u.sum_following =#{user.sumFollowing}
+            u.sum_following =#{user.sumFollowing},
+            u.is_secret=#{user.isSecret}
         where u.id = #{user.id}
     </update>
     <update id="updateUserPasswordById">
@@ -97,4 +125,14 @@
         set user.password=#{password}
         where user.id = #{userId}
     </update>
+    <insert id="addUserIdentity">
+        insert into user_identity(user_id, identity_id)
+        values (#{userId}, #{identityId})
+    </insert>
+    <delete id="removeUserIdentity">
+        delete
+        from user_identity
+        where user_id = #{userId}
+          and identity_id = #{identityId}
+    </delete>
 </mapper>
