@@ -49,4 +49,9 @@ public class Apply implements Serializable {
      */
     @TableField(value = "status")
     private Integer status;
+    /**
+     * 是否删除
+     */
+    @TableField(value = "is_delete")
+    private Integer isDelete;
 }
