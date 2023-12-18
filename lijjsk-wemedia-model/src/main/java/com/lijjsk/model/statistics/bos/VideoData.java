@@ -3,8 +3,13 @@ package com.lijjsk.model.statistics.bos;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Data
-public class VideoData {
+public class VideoData implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private Integer videoId;
     /**

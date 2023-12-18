@@ -1,10 +1,10 @@
 package com.lijjsk.user.Web;
 
+import com.lijjsk.model.wemedia.user.pojos.Identity;
+import com.lijjsk.model.wemedia.user.pojos.Menu;
+import com.lijjsk.model.wemedia.user.pojos.User;
 import com.lijjsk.user.mapper.IdentityMapper;
 import com.lijjsk.user.mapper.UserMapper;
-import com.lijjsk.user.pojo.Identity;
-import com.lijjsk.user.pojo.Menu;
-import com.lijjsk.user.pojo.User;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -13,8 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>lijjsk-wemedia-client-gateway</module>
-        <module>lijjsk-wemedia-management-gateway</module>
-        <module>lijjsk-wemedia-advertising-gateway</module>
     </modules>
 
     <properties>

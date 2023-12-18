@@ -3,7 +3,7 @@ package com.lijjsk.user.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lijjsk.model.wemedia.user.dtos.UserFollowResponseDto;
 import com.lijjsk.model.wemedia.user.dtos.UserResponseDto;
-import com.lijjsk.user.pojo.User;
+import com.lijjsk.model.wemedia.user.pojos.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

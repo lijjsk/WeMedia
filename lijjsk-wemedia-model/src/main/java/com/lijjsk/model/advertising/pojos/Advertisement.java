@@ -58,8 +58,8 @@ public class Advertisement implements Serializable {
     /**
      * 广告被展示次数
      */
-    @TableField(value = "impressions")
-    private Integer impressions;
+    @TableField(value = "shows")
+    private Integer shows;
     /**
      * 广告点击量
      */

@@ -35,4 +35,9 @@ public class Session implements Serializable {
      */
     @TableField(value = "created_time")
     private Date createdTime;
+    /**
+     * 是否删除
+     */
+    @TableField(value = "is_deleted")
+    private Integer isDeleted;
 }

@@ -1,18 +1,19 @@
 package com.lijjsk.user.service.impl;
 
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lijjsk.model.wemedia.user.dtos.*;
+import com.lijjsk.model.wemedia.user.pojos.Identity;
+import com.lijjsk.model.wemedia.user.pojos.Menu;
+import com.lijjsk.model.wemedia.user.pojos.User;
 import com.lijjsk.user.mapper.IdentityMapper;
 import com.lijjsk.user.mapper.MenuMapper;
 import com.lijjsk.user.mapper.UserMapper;
-import com.lijjsk.user.pojo.Identity;
-import com.lijjsk.user.pojo.Menu;
-import com.lijjsk.user.pojo.User;
 import com.lijjsk.user.service.IUserService;
-import com.lijjsk.user.utils.JwtUtils;
+import com.lijjsk.utils.common.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureException;
 import jakarta.annotation.Resource;
@@ -22,7 +23,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.*;
 
@@ -39,8 +39,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     IdentityMapper identityMapper;
     @Resource
     private AuthenticationManager authenticationManager;
-    @Resource
-    private JwtUtils jwtUtils;
 
     private final LambdaUpdateWrapper<User> lambdaUpdateWrapper=new LambdaUpdateWrapper<User>();
     private final LambdaQueryWrapper<Identity> lambdaQueryWrapper=new LambdaQueryWrapper<Identity>();
@@ -86,7 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         //获取并存储用户个人信息
         userMap.put("userInfo", user);
         //存储token
-        userMap.put("token", jwtUtils.creatToken(tokenmap));
+        userMap.put("token", JwtUtils.creatToken(tokenmap));
         return userMap;
     }
 
@@ -118,7 +116,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         log.info("token=============>{}", token);
         Claims claims = null;
         try {
-            claims = jwtUtils.parseToken(token);
+            claims = JwtUtils.parseToken(token);
         } catch (SignatureException e) {
             //验签出错会导致乱码，设置格式
             return false;
@@ -286,6 +284,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      * 用户获得会员权限
      */
     @Override
+    @SentinelResource("addIdentity")
     public Boolean getVIPIdentity(Integer userId, Integer identityId) {
         return userMapper.addUserIdentity(userId, identityId);
     }

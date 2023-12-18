@@ -2,6 +2,7 @@ package com.lijjsk.manage.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lijjsk.apis.user.IUserClient;
 import com.lijjsk.common.constants.ApplyConstants;
 import com.lijjsk.common.constants.CommonConstants;
 import com.lijjsk.manage.mapper.ApplyMapper;
@@ -10,6 +11,7 @@ import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.common.enums.AppHttpCodeEnum;
 import com.lijjsk.model.manage.apply.dtos.ApplyDto;
 import com.lijjsk.model.manage.apply.pojos.Apply;
+import com.lijjsk.model.wemedia.user.dtos.UserIdentityDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import java.util.List;
 public class ApplyServiceImpl extends ServiceImpl<ApplyMapper, Apply> implements ApplyService {
     @Autowired
     private ApplyMapper applyMapper;
+    @Autowired
+    private IUserClient userClient;
     @Override
     public ResponseResult saveApply(ApplyDto applyDto) {
         if(applyDto == null){
@@ -32,13 +36,14 @@ public class ApplyServiceImpl extends ServiceImpl<ApplyMapper, Apply> implements
         apply.setUserId(applyDto.getUserId());
         apply.setStatus(ApplyConstants.WAIT_FOR_PROCESS);
         apply.setIsDelete(CommonConstants.SHOW);
+        save(apply);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
     @Override
     public ResponseResult deleteApply(Integer applyId) {
         Apply apply = getById(applyId);
-        apply.setIsDelete(CommonConstants.DO_NOT_SHOW);
+        apply.setIsDelete(CommonConstants.DELETED);
         updateById(apply);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
@@ -50,6 +55,11 @@ public class ApplyServiceImpl extends ServiceImpl<ApplyMapper, Apply> implements
             apply.setStatus(ApplyConstants.REFUSE);
         }else if(result == 1){
             apply.setStatus(ApplyConstants.PASS);
+            //给用户增加广告主权限
+            UserIdentityDto userIdentityDto = new UserIdentityDto();
+            userIdentityDto.setUserId(apply.getUserId());
+            userIdentityDto.setIdentityId(3);
+            userClient.addIdentity(userIdentityDto);
         }else {
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
         }

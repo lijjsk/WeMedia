@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/manage/report")
-@CrossOrigin("*")
+@RequestMapping("/manage/report")
 public class ReportController {
     @Autowired
     private ReportService reportService;

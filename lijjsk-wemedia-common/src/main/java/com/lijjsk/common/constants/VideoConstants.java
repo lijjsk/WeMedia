@@ -8,10 +8,9 @@ public class VideoConstants {
     public static final int REVIEW_SUCCESS=1;       //1 审核成功
 
     public static final int REVIEW_FAIL=2;   //2 审核失败
+    public static final int COMPRESS_SUCCESS=3;   //3处理完成
 
-    public static final int WAIT_FOR_COMPRESS=3;       //3 待处理
-
-    public static final int COMPRESS_SUCCESS=4;   //4处理完成
+    public static final int COMPRESS_FAIL=4;    //处理失败
 
     public static final int WAIT_FOR_PUBLISH=5;       //5 待发布
 

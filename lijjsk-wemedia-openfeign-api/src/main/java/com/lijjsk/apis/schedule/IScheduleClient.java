@@ -1,5 +1,6 @@
 package com.lijjsk.apis.schedule;
 
+import com.lijjsk.apis.config.FeignConfig;
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.schedule.dtos.Task;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient("wemedia-schedule")
+@FeignClient(value = "wemedia-schedule",configuration = FeignConfig.class)
 public interface IScheduleClient {
     /**
      * 添加延迟任务

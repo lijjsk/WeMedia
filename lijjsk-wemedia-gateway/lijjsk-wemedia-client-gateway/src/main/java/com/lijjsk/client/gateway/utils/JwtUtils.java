@@ -22,7 +22,7 @@ public class JwtUtils {
                 //颁发时间
                 .setIssuedAt(new Date())
                 //过期时间
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 150))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
                 //加密算法
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();

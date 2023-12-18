@@ -32,9 +32,6 @@ public class WebSecurityConfig {
     //jwt过滤器
     @Resource
     JwtAuthenticationFilter jwtAuthenticationFilter;
-    //用户状态过滤器
-    @Resource
-    UserStatusCheckFilter userStatusCheckFilter;
     //自定义从数据库获取用户信息
     @Resource
     MyUserDetailsService myUserDetailsService;
@@ -48,16 +45,11 @@ public class WebSecurityConfig {
 
         httpSecurity.authorizeHttpRequests(
                 authorizeHttpRequests->authorizeHttpRequests
-                        .requestMatchers("/user/*").permitAll()
-//                        .requestMatchers("/user/register").permitAll()
-//                        .requestMatchers("/user/update").permitAll()
-//                        .requestMatchers("/user/followUser").permitAll()
                         //使用自定义认证逻辑
                         .anyRequest().access(sttAuthorizationManager)
         );
         //将jwt过滤器添加到过滤器链中
-        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(userStatusCheckFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
     /**

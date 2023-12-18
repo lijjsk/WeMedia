@@ -1,18 +1,14 @@
 package com.lijjsk.manage.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lijjsk.common.constants.CommonConstants;
 import com.lijjsk.common.constants.ProcessConstants;
-import com.lijjsk.common.constants.ReportConstants;
 import com.lijjsk.manage.mapper.ReportMapper;
 import com.lijjsk.manage.mapper.ReportResultMapper;
 import com.lijjsk.manage.service.ReportResultService;
-import com.lijjsk.manage.service.ReportService;
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.common.enums.AppHttpCodeEnum;
-import com.lijjsk.model.manage.report.dtos.ReportDto;
 import com.lijjsk.model.manage.report.dtos.ReportResultDto;
 import com.lijjsk.model.manage.report.pojos.Report;
 import com.lijjsk.model.manage.report.pojos.ReportResult;
@@ -55,7 +51,6 @@ public class ReportResultServiceImpl extends ServiceImpl<ReportResultMapper, Rep
 
     /**
      * 根据类型获取举报结果列表
-     *
      * @return
      */
     @Override
@@ -78,7 +73,7 @@ public class ReportResultServiceImpl extends ServiceImpl<ReportResultMapper, Rep
     }
 
     /**
-     * 保存举报结果列表
+     * 保存举报结果
      * @param reportResultDto
      * @return
      */
@@ -86,7 +81,7 @@ public class ReportResultServiceImpl extends ServiceImpl<ReportResultMapper, Rep
     public ResponseResult saveReportResult(ReportResultDto reportResultDto) {
         ReportResult reportResult = new ReportResult();
         reportResult.setReportId(reportResultDto.getReportId());
-        reportResult.setProcessResult(reportResult.getProcessResult());
+        reportResult.setProcessResult(reportResultDto.getProcessResult());
         reportResult.setAdminId(reportResultDto.getAdminId());
         reportResult.setIsDelete(CommonConstants.SHOW);
         reportResult.setProcessTime(new Date());
@@ -106,10 +101,10 @@ public class ReportResultServiceImpl extends ServiceImpl<ReportResultMapper, Rep
      */
     @Override
     public ResponseResult deleteReportResult(Integer reportResultId) {
-        ReportResult reportResult = reportResultMapper.selectById(Wrappers.<ReportResult>lambdaQuery().eq(ReportResult::getId,reportResultId));
-        reportResult.setIsDelete(CommonConstants.DO_NOT_SHOW);
+        ReportResult reportResult = reportResultMapper.selectOne(Wrappers.<ReportResult>lambdaQuery().eq(ReportResult::getReportId,reportResultId));
+        reportResult.setIsDelete(CommonConstants.DELETED);
         updateById(reportResult);
-        return ResponseResult.okResult(reportResult);
+        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
     /**

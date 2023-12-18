@@ -4,22 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.statistics.bos.VideoData;
 import com.lijjsk.model.wemedia.video.pojos.Video;
+import org.springframework.web.bind.annotation.GetMapping;
 
 public interface VideoBrowseService extends IService<Video> {
-    /**
-     * 返回视频列表
-     * @return
-     */
-    public ResponseResult getVideoList();
-
-    /**
-     * 返回视频信息
-     * @param videoId
-     * @return
-     */
-
-    public ResponseResult getVideoInfo(Integer videoId);
-
     /**
      * 增加视频弹幕量
      * @param videoId

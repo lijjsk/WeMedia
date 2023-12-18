@@ -1,6 +1,7 @@
 package com.lijjsk.advertising.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lijjsk.advertising.mapper.AdvertisementMapper;
 import com.lijjsk.advertising.service.AdvertisementService;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Timestamp;
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -34,6 +36,8 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
     private FileStorageService fileStorageService;
     @Autowired
     private PositionService positionService;
+    @Autowired
+    private AdvertisementMapper advertisementMapper;
     /**
      * 增加广告
      * @param advertiserId
@@ -72,6 +76,12 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
             e.printStackTrace();
         }
         advertisement.setPictureUrl(imageUrl);
+        //初始化广告效果数据
+        advertisement.setShows(0);
+        advertisement.setConversions(0);
+        advertisement.setClicks(0);
+        advertisement.setCtr(0.0);
+        advertisement.setConversion_Rate(0.0);
         save(advertisement);
         positionService.reducePositionNum(position);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
@@ -83,7 +93,7 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
      * @return
      */
     @Override
-    public ResponseResult stopAdvertisement(String advertisementId) {
+    public ResponseResult stopAdvertisement(Integer advertisementId) {
         Advertisement advertisement = getById(advertisementId);
         advertisement.setStatus(AdvertisementConstants.END_PUTTING_IN);
         updateById(advertisement);
@@ -93,10 +103,8 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
 
     @Scheduled(cron = "0 0 0 * * ?")  // 每天凌晨触发一次
     public void stopAdvertisementAuto(){
-        QueryWrapper<Advertisement> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("status", AdvertisementConstants.PUTTING_IN);
-        List<Advertisement> activeAdvertisements = this.list(queryWrapper);
-
+        List<Advertisement> activeAdvertisements = advertisementMapper.selectList(Wrappers.<Advertisement>lambdaQuery()
+                .eq(Advertisement::getStatus,AdvertisementConstants.PUTTING_IN));
         // 获取当前时间
         long currentTimeMillis = System.currentTimeMillis();
 
@@ -115,9 +123,8 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
      */
     @Override
     public ResponseResult getAllAdvertisement() {
-        QueryWrapper<Advertisement> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("status", AdvertisementConstants.PUTTING_IN);
-        return ResponseResult.okResult(this.list(queryWrapper));
+        List<Advertisement> advertisementList = advertisementMapper.selectList(Wrappers.<Advertisement>lambdaQuery());
+        return ResponseResult.okResult(advertisementList);
     }
 
     /**
@@ -126,10 +133,23 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
      * @return
      */
     @Override
-    public ResponseResult getUserAdvertisement(String advertiserId) {
-        QueryWrapper<Advertisement> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("advertiserId",advertiserId);
-        return ResponseResult.okResult(this.list(queryWrapper));
+    public ResponseResult getUserAdvertisement(Integer advertiserId) {
+        List<Advertisement> advertisementList = advertisementMapper.selectList(Wrappers.<Advertisement>lambdaQuery()
+                .eq(Advertisement::getAdvertiserId,advertiserId));
+        return ResponseResult.okResult(advertisementList);
+    }
+
+    /**
+     * 展示广告
+     *
+     * @param advertisementId
+     */
+    @Override
+    public ResponseResult showAdvertisement(Integer advertisementId) {
+        Advertisement advertisement = getById(advertisementId);
+        advertisement.setShows(advertisement.getShows()+1);
+        updateById(advertisement);
+        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
     /**
@@ -138,48 +158,49 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
      * @return
      */
     @Override
-    public ResponseResult clickAdvertisement(String advertisementId) {
+    public ResponseResult clickAdvertisement(Integer advertisementId) {
         Advertisement advertisement = getById(advertisementId);
         advertisement.setClicks(advertisement.getClicks()+1);
+        updateById(advertisement);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
     /**
      * 转化广告
-     *
      * @param advertisementId
      * @return
      */
     @Override
-    public ResponseResult converseAdvertisement(String advertisementId) {
+    public ResponseResult converseAdvertisement(Integer advertisementId) {
         Advertisement advertisement = getById(advertisementId);
         advertisement.setConversions(advertisement.getConversions()+1);
+        updateById(advertisement);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
     /**
-     * 获取广告点击率
+     * 获取广告效果信息
      * @param advertisementId
      * @return
      */
     @Override
-    public ResponseResult getAdvertisementCTR(String advertisementId) {
+    public ResponseResult getAdvertisementInfo(Integer advertisementId) {
         Advertisement advertisement = getById(advertisementId);
-        AdvertisementDataDto dto = new AdvertisementDataDto();
-        BeanUtils.copyProperties(advertisement,dto);
-        return ResponseResult.okResult(dto);
-    }
+        DecimalFormat df = new DecimalFormat("#.###");
 
-    /**
-     * 获取广告转化率
-     * @param advertisementId
-     * @return
-     */
-    @Override
-    public ResponseResult getAdvertisementConversionRate(String advertisementId) {
-        Advertisement advertisement = getById(advertisementId);
-        AdvertisementDataDto dto = new AdvertisementDataDto();
-        BeanUtils.copyProperties(advertisement,dto);
-        return ResponseResult.okResult(dto);
+        if(advertisement.getShows() != 0) {
+            advertisement.setCtr(Double.parseDouble(df.format((double)advertisement.getClicks() / (double)advertisement.getShows())));
+        } else {
+            advertisement.setCtr(0.0);
+        }
+
+        if (advertisement.getClicks() != 0) {
+            advertisement.setConversion_Rate(Double.parseDouble(df.format((double)advertisement.getConversions() / (double)advertisement.getClicks())));
+        } else {
+            advertisement.setConversion_Rate(0.0);
+        }
+
+        updateById(advertisement);
+        return ResponseResult.okResult(advertisement);
     }
 }

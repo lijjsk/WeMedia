@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/manage/apply")
-@CrossOrigin("*")
+@RequestMapping("/manage/apply")
 public class ApplyController {
     @Autowired
     private ApplyService applyService;
@@ -20,7 +19,7 @@ public class ApplyController {
     public ResponseResult deleteApply(@RequestParam("applyId") Integer applyId){
         return applyService.deleteApply(applyId);
     }
-    @GetMapping("/check/apply")
+    @PutMapping("/check/apply")
     public ResponseResult checkApply(@RequestParam("applyId") Integer applyId,@RequestParam("result") Integer result){
         return applyService.checkApply(applyId,result);
     }

@@ -27,7 +27,7 @@ public interface AdvertisementService extends IService<Advertisement> {
      * @param advertisementId
      * @return
      */
-    public ResponseResult stopAdvertisement(String advertisementId);
+    public ResponseResult stopAdvertisement(Integer advertisementId);
 
     /**
      * 获取所有广告
@@ -40,33 +40,29 @@ public interface AdvertisementService extends IService<Advertisement> {
      * @param advertiserId
      * @return
      */
-    public ResponseResult getUserAdvertisement(String advertiserId);
-
+    public ResponseResult getUserAdvertisement(Integer advertiserId);
+    /**
+     * 展示广告
+     */
+    public ResponseResult showAdvertisement(Integer advertisementId);
     /**
      * 点击广告
      * @param advertisementId
      * @return
      */
-    public ResponseResult clickAdvertisement(String advertisementId);
+    public ResponseResult clickAdvertisement(Integer advertisementId);
 
     /**
      * 转化广告
      * @param advertisementId
      * @return
      */
-    public ResponseResult converseAdvertisement(String advertisementId);
+    public ResponseResult converseAdvertisement(Integer advertisementId);
 
     /**
-     * 获取广告点击率
+     * 获取广告效果信息
      * @param advertisementId
      * @return
      */
-    public ResponseResult getAdvertisementCTR(String advertisementId);
-
-    /**
-     * 获取广告转化率
-     * @param advertisementId
-     * @return
-     */
-    public ResponseResult getAdvertisementConversionRate(String advertisementId);
+    public ResponseResult getAdvertisementInfo(Integer advertisementId);
 }

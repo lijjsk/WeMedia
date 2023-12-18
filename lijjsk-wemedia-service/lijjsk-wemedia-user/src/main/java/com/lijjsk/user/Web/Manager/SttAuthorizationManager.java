@@ -1,6 +1,6 @@
 package com.lijjsk.user.Web.Manager;
+import com.lijjsk.model.wemedia.user.pojos.Menu;
 import com.lijjsk.user.mapper.MenuMapper;
-import com.lijjsk.user.pojo.Menu;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class  SttAuthorizationManager implements AuthorizationManager<RequestAut
         log.info("URL=======================>{}",url);
         log.info("URI=======================>{}",uri);
         //不需要认证的请求
-        if("/user/login".equals(uri)||"/logout".equals(uri)||"/error".equals(uri)){
+        if("/user/register".equals(uri)||"/logout".equals(uri)||"/error".equals(uri)){
             //通过
             return new AuthorizationDecision(true);
         }

@@ -1,5 +1,6 @@
 package com.lijjsk.schedule.service.impl;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -35,6 +36,7 @@ public class TaskServiceImpl implements TaskService {
      * @return
      */
     @Override
+    @SentinelResource("addTask")
     public long addTask(Task task) {
         //1.添加任务到数据库中
 
@@ -179,6 +181,7 @@ public class TaskServiceImpl implements TaskService {
      * @return
      */
     @Override
+    @SentinelResource("pullTask")
     public Task pull(int type, int priority) {
         Task task = null;
         try{

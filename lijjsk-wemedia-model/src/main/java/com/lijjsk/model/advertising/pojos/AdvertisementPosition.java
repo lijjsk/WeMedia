@@ -33,5 +33,10 @@ public class AdvertisementPosition implements Serializable {
      * 广告价格
      */
     @TableField(value = "price")
-    private Integer price;
+    private Double price;
+    /**
+     * 是否删除
+     */
+    @TableField(value = "is_deleted")
+    private Integer isDeleted;
 }

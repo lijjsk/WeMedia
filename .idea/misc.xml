@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MavenProjectsManager">
@@ -8,8 +9,13 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/lijjsk-wemedia-gateway/lijjsk-wemedia-advertising-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/lijjsk-wemedia-gateway/lijjsk-wemedia-management-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-advertise-login/pom.xml" />
         <option value="$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-manage-login/pom.xml" />
+        <option value="$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemedia-barrage/pom.xml" />
+        <option value="$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemedia-chat/pom.xml" />
+        <option value="$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemedia-comment/pom.xml" />
         <option value="$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemedia-login/pom.xml" />
         <option value="$PROJECT_DIR$/lijjsk-wemedia-service/lijjsk-wemeida-user/pom.xml" />
       </set>

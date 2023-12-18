@@ -1,6 +1,5 @@
 package com.lijjsk.manage.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lijjsk.common.constants.CommonConstants;
@@ -58,7 +57,10 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> impleme
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
         }
         Report report = new Report();
-        BeanUtils.copyProperties(reportDto,report);
+        report.setUserId(reportDto.getUserId());
+        report.setTargetId(reportDto.getTargetId());
+        report.setType(reportDto.getType());
+        report.setContent(reportDto.getContent());
         report.setCreatedTime(new Date());
         report.setIsDelete(CommonConstants.SHOW);
         report.setProcessingStatus(ProcessConstants.WAIT_FOR_PROCESS);
@@ -78,7 +80,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> impleme
         if (report == null){
             return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
         }
-        report.setIsDelete(CommonConstants.DO_NOT_SHOW);
+        report.setIsDelete(CommonConstants.DELETED);
         updateById(report);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }

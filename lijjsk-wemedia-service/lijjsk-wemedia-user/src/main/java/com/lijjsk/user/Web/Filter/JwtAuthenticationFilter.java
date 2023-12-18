@@ -1,8 +1,7 @@
 package com.lijjsk.user.Web.Filter;
-
-import com.lijjsk.user.pojo.Identity;
-import com.lijjsk.user.pojo.User;
-import com.lijjsk.user.utils.JwtUtils;
+import com.lijjsk.model.wemedia.user.pojos.Identity;
+import com.lijjsk.model.wemedia.user.pojos.User;
+import com.lijjsk.utils.common.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureException;
 import jakarta.annotation.Resource;
@@ -32,25 +31,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * 1.获取到用户信息后，需要传递给SpringSecurity,他会去判断接口方法是否有权限
      * 2.告知SpringSecurity就是使用Authentication告知框架，然后存到SecurityContext中，=====》SecurityContextHolder中
      */
-    @Resource
-    JwtUtils jwtUtils;
     @Override
     /**
      * 该方法会被doFilter调用
      */
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        // 获取请求的URI
+        String requestURI = request.getRequestURI();
         //获取token
         String token = request.getHeader("Authorization");
-        //没有token可能是login，直接方向（此后由其他过滤器处理）
+        // 如果请求的是/user/register，则直接放行
+        if (requestURI != null && requestURI.equals("/user/register")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if(token==null){
-            doFilter(request,response,filterChain);
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("没有检查到token，请检查是否登录！！！！！");
             return;
         }
         //有token,Jwt解析数据
         log.info("token=============>{}",token);
         Claims claims=null;
         try{
-            claims = jwtUtils.parseToken(token);
+            claims = JwtUtils.parseToken(token);
         }catch (SignatureException e){
             //验签出错会导致乱码，设置格式
             response.setCharacterEncoding("UTF-8");

@@ -1,5 +1,4 @@
 package com.lijjsk.statistics.service.impl;
-
 import com.lijjsk.apis.video.IVideoClient;
 import com.lijjsk.model.statistics.bos.VideoData;
 import com.lijjsk.statistics.service.RedisDataSyncTask;
@@ -14,20 +13,17 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.Set;
 
-@Component
 @Service
 @Slf4j
 public class RedisDataSyncTaskImpl implements RedisDataSyncTask {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
-
     @Autowired
     private IVideoClient videoClient;
-
     private static final String VIDEO_HASH_KEY = "video_data";
 
-    @Scheduled(fixedRate = 60000) // 每隔60秒执行一次，根据需要进行调整
+    @Scheduled(fixedRate = 10000) // 每隔10秒执行一次，根据需要进行调整
     public void syncDataToDatabase() {
         Set<String> videoKeys = redisTemplate.keys(VIDEO_HASH_KEY + ":*");
 
@@ -48,7 +44,8 @@ public class RedisDataSyncTaskImpl implements RedisDataSyncTask {
                     if (videoDataMap != null) {
                         VideoData videoData = convertToVideoData(videoDataMap);
                         log.info("调用视频微服务同步视频数据");
-                        videoClient.updateVideoData(videoData);
+                        log.info(videoClient.updateVideoData(videoData));
+                        log.info("视频数据同步完成");
                     }
                 }
             }

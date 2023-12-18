@@ -7,6 +7,7 @@ import com.lijjsk.model.common.enums.TaskTypeEnum;
 import com.lijjsk.model.schedule.dtos.Task;
 import com.lijjsk.model.wemedia.video.pojos.Video;
 import com.lijjsk.utils.common.ProtostuffUtil;
+import com.lijjsk.video.mapper.VideoMapper;
 import com.lijjsk.video.service.VideoPublishService;
 import com.lijjsk.video.service.VideoTaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,8 @@ import java.util.Date;
 @Service
 @Slf4j
 public class VideoTaskServiceImpl implements VideoTaskService {
+    @Autowired
+    private VideoMapper videoMapper;
     @Autowired
     private IScheduleClient scheduleClient;
     @Autowired
@@ -36,6 +39,9 @@ public class VideoTaskServiceImpl implements VideoTaskService {
         task.setExecuteTime(publishTime.getTime());
         task.setTaskType(TaskTypeEnum.VIDEO_PUBLISH_TIME.getTaskType());
         task.setPriority(TaskTypeEnum.VIDEO_PUBLISH_TIME.getPriority());
+        Video currentVideo = videoMapper.selectById(id);
+        currentVideo.setPublishTime(publishTime);
+        videoMapper.updateById(currentVideo);
         Video video = new Video();
         video.setId(id);
         task.setParameters(ProtostuffUtil.serialize(video));
@@ -46,14 +52,16 @@ public class VideoTaskServiceImpl implements VideoTaskService {
      * 消费任务 发布视频
      */
     @Override
-    @Scheduled(fixedRate = 1000)
+//    @Scheduled(fixedRate = 10000)
     public void publishVideoByTask() {
         log.info("消费任务，发布视频");
         ResponseResult responseResult = scheduleClient.pull(TaskTypeEnum.VIDEO_PUBLISH_TIME.getTaskType(), TaskTypeEnum.VIDEO_PUBLISH_TIME.getPriority());
         if (responseResult.getCode().equals(200) && responseResult.getData() != null){
-            Task task = JSON.parseObject(JSON.toJSONString(responseResult.getData()), Task.class);
+            Task task = com.alibaba.fastjson.JSON.parseObject(JSON.toJSONString(responseResult.getData()), Task.class);
             Video video = ProtostuffUtil.deserialize(task.getParameters(),Video.class);
             videoPublishService.publishVideo(video.getId());
+        }else{
+            log.info("还没有需要发布的视频");
         }
     }
 }

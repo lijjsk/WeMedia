@@ -1,8 +1,7 @@
 package com.lijjsk.user.Web.Filter;
 
-import ch.qos.logback.core.status.OnConsoleStatusListener;
 import com.lijjsk.model.wemedia.user.enums.UserStates;
-import com.lijjsk.user.utils.JwtUtils;
+import com.lijjsk.utils.common.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureException;
 import jakarta.annotation.Resource;
@@ -21,9 +20,6 @@ import java.util.List;
 @Slf4j
 @Component
 public class UserStatusCheckFilter extends OncePerRequestFilter {
-    @Resource
-    JwtUtils jwtUtils;
-
     //需要检查的路径
     private static final List<String> PROTECTED_PATHS = Arrays.asList(
             "/api/protected1",
@@ -46,7 +42,7 @@ public class UserStatusCheckFilter extends OncePerRequestFilter {
         Claims claims = null;
         try {
             //解析token
-            claims = jwtUtils.parseToken(token);
+            claims = JwtUtils.parseToken(token);
         } catch (SignatureException e) {
             //验签出错会导致乱码，设置格式
             response.setCharacterEncoding("UTF-8");

@@ -35,4 +35,9 @@ public class VideoResolution implements Serializable {
      */
     @TableField(value = "url")
     private String url;
+    /**
+     * 是否删除
+     */
+    @TableField(value = "is_deleted")
+    private Integer isDeleted;
 }

@@ -1,6 +1,7 @@
 package com.lijjsk.authentication.config;
 
 import com.lijjsk.authentication.web.Filter.JwtAuthenticationFilter;
+import com.lijjsk.authentication.web.Filter.UserStatusCheckFilter;
 import com.lijjsk.authentication.web.Manager.SttAuthorizationManager;
 import com.lijjsk.authentication.web.MyUserDetailsService;
 import jakarta.annotation.Resource;
@@ -36,6 +37,9 @@ public class WebSecurityConfig {
     //配置自定义的权限比对
     @Resource
     SttAuthorizationManager sttAuthorizationManager;
+    //用户状态过滤器
+    @Resource
+    UserStatusCheckFilter userStatusCheckFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         //关闭csrf
@@ -48,7 +52,8 @@ public class WebSecurityConfig {
                         .anyRequest().access(sttAuthorizationManager)
         );
         //将jwt过滤器添加到过滤器链中
-        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(userStatusCheckFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
     /**

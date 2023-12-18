@@ -2,7 +2,9 @@ package com.lijjsk.video.service.impl;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lijjsk.common.constants.VideoConstants;
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.common.enums.AppHttpCodeEnum;
 import com.lijjsk.model.statistics.bos.VideoData;
@@ -21,52 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class VideoBrowseServiceImpl extends ServiceImpl<VideoMapper, Video> implements VideoBrowseService {
-    @Autowired
-    private VideoResolutionMapper videoResolutionMapper;
-    @Autowired
-    private UserMapper userMapper;
-    /**
-     * 返回视频列表
-     * @return
-     */
-    @Override
-    public ResponseResult getVideoList() {
-        // 使用 MyBatis-Plus 提供的查询方法，查询前6条视频数据
-        List<Video> videoList = this.list(new QueryWrapper<Video>().last("LIMIT 6"));
-
-        // 将查询结果转换成VideoBriefDto 格式
-        List<VideoBriefDto> videoBriefDtoList = videoList.stream()
-                .map(VideoBriefDto::new)
-                .collect(Collectors.toList());
-
-        return ResponseResult.okResult(videoBriefDtoList);
-
-    }
-
-    /**
-     * 返回视频信息
-     * @param videoId
-     * @return
-     */
-    @Override
-    public ResponseResult getVideoInfo(Integer videoId) {
-        VideoDto videoDto = new VideoDto();
-        Video video = getById(videoId);
-        BeanUtils.copyProperties(video,videoDto);
-        VideoResolution videoResolution = videoResolutionMapper.getVideoResolution(video.getId().toString(), "1080p60hz");
-        BeanUtils.copyProperties(videoResolution,videoDto);
-        videoDto.setUserId(userMapper.selectById(video.getUserId()).getId());
-        videoDto.setUsername(userMapper.selectById(video.getUserId()).getUsername());
-        addVideoViewNum(videoId);
-        return ResponseResult.okResult(videoDto);
-    }
 
     /**
      * 增加视频弹幕量

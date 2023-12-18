@@ -14,14 +14,12 @@
     <modules>
         <module>lijjsk-wemeida-video</module>
         <module>lijjsk-wemedia-schedule</module>
-        <module>lijjsk-wemedia-barrage</module>
-        <module>lijjsk-wemedia-comment</module>
         <module>lijjsk-wemedia-statistics</module>
         <module>lijjsk-wemedia-user</module>
-        <module>lijjsk-wemedia-chat</module>
         <module>lijjsk-wemedia-advertising</module>
         <module>lijjsk-wemedia-authentication</module>
         <module>lijjsk-wemedia-manage</module>
+        <module>lijjsk-wemedia-social</module>
     </modules>
 
     <properties>
@@ -30,23 +28,23 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.example</groupId>-->
-<!--            <artifactId>lijjsk-wemedia-common</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>lijjsk-wemedia-common</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>lijjsk-wemedia-model</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.example</groupId>-->
-<!--            <artifactId>lijjsk-wemedia-utils</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.example</groupId>-->
-<!--            <artifactId>lijjsk-wemedia-openfeign-api</artifactId>-->
-<!--            <version>1.0-SNAPSHOT</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>lijjsk-wemedia-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>lijjsk-wemedia-openfeign-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -59,30 +57,30 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.alibaba.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.alibaba.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.alibaba.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.alibaba.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-bootstrap</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-loadbalancer</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -99,6 +97,21 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.85.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
         </dependency>
     </dependencies>
 </project>

@@ -7,8 +7,8 @@ import com.lijjsk.authentication.pojo.Identity;
 import com.lijjsk.authentication.pojo.Menu;
 import com.lijjsk.authentication.pojo.User;
 import com.lijjsk.authentication.service.IUserService;
-import com.lijjsk.authentication.utils.JwtUtils;
 import com.lijjsk.model.wemedia.user.dtos.*;
+import com.lijjsk.utils.common.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureException;
 import jakarta.annotation.Resource;
@@ -31,8 +31,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     UserMapper userMapper;
     @Resource
     private AuthenticationManager authenticationManager;
-    @Resource
-    private JwtUtils jwtUtils;
 
     /**
      * 登录，查询权限
@@ -73,7 +71,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         //获取并存储用户个人信息
         userMap.put("userInfo",user);
         //存储token
-        userMap.put("token",jwtUtils.creatToken(tokenmap));
+        userMap.put("token", JwtUtils.creatToken(tokenmap));
         return userMap;
     }
 
@@ -105,7 +103,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         log.info("token=============>{}", token);
         Claims claims = null;
         try {
-            claims = jwtUtils.parseToken(token);
+            claims = JwtUtils.parseToken(token);
         } catch (SignatureException e) {
             //验签出错会导致乱码，设置格式
             return false;

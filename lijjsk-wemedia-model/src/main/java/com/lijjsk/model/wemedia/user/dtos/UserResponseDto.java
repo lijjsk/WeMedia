@@ -1,5 +1,6 @@
 package com.lijjsk.model.wemedia.user.dtos;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,4 +18,5 @@ public class UserResponseDto {
     private Integer sumFollowed;
     private Integer sumFollowing;
     private Integer state;
+    private Boolean isSecret;
 }

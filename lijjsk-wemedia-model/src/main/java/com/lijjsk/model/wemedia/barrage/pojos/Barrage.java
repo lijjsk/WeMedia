@@ -68,6 +68,6 @@ public class Barrage implements Serializable {
     /**
      * 是否展示
      */
-    @TableField(value = "is_show")
-    private Integer isShow;
+    @TableField(value = "is_deleted")
+    private Integer isDeleted;
 }

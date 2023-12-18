@@ -1,5 +1,5 @@
 server:
-  port: 51707
+  port: 51704
 spring:
   application:
     name: wemedia-advertising

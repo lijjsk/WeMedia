@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableDiscoveryClient
 @MapperScan("com.lijjsk.schedule.mapper")
-@ComponentScan("com.lijjsk.common.redis")
+@ComponentScan({"com.lijjsk.common.redis", "com.lijjsk.schedule"})
 @EnableScheduling //开启任务调度
 public class ScheduleApplication {
     public static void main(String[] args) {

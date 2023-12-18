@@ -27,10 +27,9 @@ public class BarrageProcessorImpl implements BarrageProcessor {
             log.error("JSON转换失败");
             e.printStackTrace();
         }
+        log.info("接收到消息add_barrage_topic");
 
     }
-
-
 
     @KafkaListener(topics = "reduce_barrage_topic")
     public void reduceBarrageNum(String jsonString) {
@@ -43,5 +42,6 @@ public class BarrageProcessorImpl implements BarrageProcessor {
             log.error("JSON转换失败");
             e.printStackTrace();
         }
+        log.info("reduce_barrage_topic");
     }
 }

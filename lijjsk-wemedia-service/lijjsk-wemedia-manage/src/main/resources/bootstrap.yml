@@ -1,8 +1,8 @@
 server:
-  port: 51707
+  port: 51705
 spring:
   application:
-    name: wemedia-barrage
+    name: wemedia-manage
   cloud:
     nacos:
       discovery:

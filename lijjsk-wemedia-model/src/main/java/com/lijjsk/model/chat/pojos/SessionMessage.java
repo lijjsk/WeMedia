@@ -45,5 +45,9 @@ public class SessionMessage implements Serializable {
      */
     @TableField(value = "content")
     private String content;
-
+    /**
+     * 是否删除
+     */
+    @TableField(value = "is_deleted")
+    private Integer isDeleted;
 }

@@ -1,6 +1,8 @@
 package com.lijjsk.video.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lijjsk.common.constants.CommonConstants;
+import com.lijjsk.common.constants.VideoConstants;
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.common.enums.AppHttpCodeEnum;
 import com.lijjsk.model.wemedia.video.dtos.VideoBriefDto;
@@ -34,30 +36,11 @@ public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> imple
      * @return 统一结果返回体
      */
     @Override
-    public ResponseResult uploadVideo(MultipartFile multipartFile) {
+    public ResponseResult uploadVideo(Integer userId,MultipartFile multipartFile) {
         //检查参数
         if(multipartFile == null || multipartFile.getSize() == 0){
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
         }
-        // 获取当前认证的用户信息
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        // 检查用户是否已认证
-//        if (authentication != null && authentication.isAuthenticated()) {
-//            // 获取用户详细信息
-//            Object principal = authentication.getPrincipal();
-//            //这里UserDetails需要实现getUserId()方法
-//            //String userId = ((org.springframework.security.core.userdetails.UserDetails) principal).getUsername();
-//
-//            // 在这里你可以使用用户信息进行进一步的处理，比如记录日志，关联用户和上传的视频等
-//            return ResponseResult.okResult(video);
-//        } else {
-//            // 处理未认证的情况，可能返回错误信息或者进行其他逻辑处理
-//            return ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
-//        }
-        //生成视频唯一主键
-//        String filename = UUID.randomUUID().toString().replace("-", "");
-        //视频所在文件夹为用户Id  这里先设置一个默认值用于测试
-        Integer userId = 1;
         String packageName = userId.toString();
         String uuid = UUID.randomUUID().toString().replace("-", "");
         //获取原视频名称
@@ -95,7 +78,6 @@ public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> imple
         video.setCoverUrl(imageUrl);
         //设置视频状态初始为待审核
         video.setStatus(0);
-        //从principal中获取当前登录用户的信息
         video.setUserId(userId);
         save(video);
         VideoBriefDto videoBriefDto = new VideoBriefDto(video);
@@ -133,6 +115,7 @@ public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> imple
             }
             //获取返回的url保存到数据库中
             video.setCoverUrl(imageUrl);
+            video.setStatus(VideoConstants.WAIT_FOR_REVIEW);
             updateById(video);
             rabbitTemplate.convertAndSend("video-review-queue", video.getId());
             VideoBriefDto videoBriefDto = new VideoBriefDto(video);

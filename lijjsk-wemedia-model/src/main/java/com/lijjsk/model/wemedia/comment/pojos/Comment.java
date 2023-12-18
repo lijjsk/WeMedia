@@ -61,7 +61,7 @@ public class Comment implements Serializable {
     /**
      * 是否删除
      */
-    @TableField(value = "is_show")
-    private Integer isShow;
+    @TableField(value = "is_deleted")
+    private Integer isDeleted;
 
 }

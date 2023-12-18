@@ -2,8 +2,8 @@ package com.lijjsk.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lijjsk.model.wemedia.user.dtos.*;
-import com.lijjsk.user.pojo.Identity;
-import com.lijjsk.user.pojo.User;
+import com.lijjsk.model.wemedia.user.pojos.Identity;
+import com.lijjsk.model.wemedia.user.pojos.User;
 
 import java.util.List;
 import java.util.Map;

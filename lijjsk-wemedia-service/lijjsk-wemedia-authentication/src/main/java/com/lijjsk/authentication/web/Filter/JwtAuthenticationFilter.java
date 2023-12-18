@@ -2,7 +2,7 @@ package com.lijjsk.authentication.web.Filter;
 
 import com.lijjsk.authentication.pojo.Identity;
 import com.lijjsk.authentication.pojo.User;
-import com.lijjsk.authentication.utils.JwtUtils;
+import com.lijjsk.utils.common.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureException;
 import jakarta.annotation.Resource;
@@ -32,8 +32,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * 1.获取到用户信息后，需要传递给SpringSecurity,他会去判断接口方法是否有权限
      * 2.告知SpringSecurity就是使用Authentication告知框架，然后存到SecurityContext中，=====》SecurityContextHolder中
      */
-    @Resource
-    JwtUtils jwtUtils;
     @Override
     /**
      * 该方法会被doFilter调用
@@ -51,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Claims claims=null;
         try{
             //解析token
-            claims = jwtUtils.parseToken(token);
+            claims = JwtUtils.parseToken(token);
         }catch (SignatureException e){
             //验签出错会导致乱码，设置格式
             response.setCharacterEncoding("UTF-8");

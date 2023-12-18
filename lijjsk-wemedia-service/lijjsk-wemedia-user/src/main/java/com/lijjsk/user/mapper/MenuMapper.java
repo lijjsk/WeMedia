@@ -1,7 +1,7 @@
 package com.lijjsk.user.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.lijjsk.user.pojo.Menu;
+import com.lijjsk.model.wemedia.user.pojos.Menu;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,6 +11,5 @@ public interface MenuMapper extends BaseMapper<Menu> {
     //根据用户id选择权限
     List<Menu> getMenusByUserId(@Param("userId") Integer userId);
     Menu selectMenuByURI(@Param("uri") String uri);
-
 
 }

@@ -1,6 +1,7 @@
 package com.lijjsk.video.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lijjsk.common.constants.VideoConstants;
 import com.lijjsk.model.common.dtos.OriginalFormatResult;
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.common.enums.AppHttpCodeEnum;
@@ -76,6 +77,8 @@ public class VideoCompressServiceImpl extends ServiceImpl<VideoResolutionMapper,
 //        upload(videoTo720p30hz,video);
 //        upload(videoTo480p30hz,video);
 //        upload(videoTo320p30hz,video);
+        video.setStatus(VideoConstants.WAIT_FOR_PUBLISH);
+        videoMapper.updateById(video);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
