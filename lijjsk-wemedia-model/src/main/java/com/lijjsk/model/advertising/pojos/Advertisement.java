@@ -79,7 +79,7 @@ public class Advertisement implements Serializable {
      * 广告转化率
      */
     @TableField(value = "conversion_rate")
-    private Double conversion_Rate;
+    private Double conversionRate;
     /**
      * 广告状态
      */

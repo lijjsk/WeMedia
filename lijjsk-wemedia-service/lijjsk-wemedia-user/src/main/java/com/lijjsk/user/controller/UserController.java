@@ -23,7 +23,10 @@ public class UserController {
     IUserService userService;
     //================================================================================用户通用方法
 
-
+    @GetMapping("/get/allUser")
+    public ResponseResult getAllUser(){
+        return ResponseResult.okResult(userService.getAllUser());
+    }
     /**
      * 用户根据信息注册
      */

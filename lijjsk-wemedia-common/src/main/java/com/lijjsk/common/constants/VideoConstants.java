@@ -19,4 +19,6 @@ public class VideoConstants {
     public static final int DELETED=7;   //7 已删除
 
     public static final int HUMAN_REVIEW=8;   //8 需要人工审核
+
+    public static final int DOWN = 9;   //已下架
 }

@@ -16,6 +16,7 @@ import com.lijjsk.social.service.CommentReplyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -27,9 +28,9 @@ public class CommentReplyServiceImpl extends ServiceImpl<CommentReplyMapper, Com
     private UserMapper userMapper;
     @Autowired
     private CommentMapper commentMapper;
+
     /**
      * 获取评论回复列表
-     *
      * @param commentId
      * @return
      */
@@ -56,6 +57,7 @@ public class CommentReplyServiceImpl extends ServiceImpl<CommentReplyMapper, Com
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult saveCommentReply(CommentReplyDto commentReplyDto) {
         if(commentReplyDto == null){
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
@@ -99,6 +101,7 @@ public class CommentReplyServiceImpl extends ServiceImpl<CommentReplyMapper, Com
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult deleteCommentReply(Integer replyId) {
         if(replyId == null){
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);

@@ -1,5 +1,6 @@
 package com.lijjsk.authentication.service.impl;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lijjsk.authentication.mapper.MenuMapper;
 import com.lijjsk.authentication.mapper.UserMapper;
@@ -36,6 +37,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      * 登录，查询权限
      */
     @Override
+    @SentinelResource("login")
     public Map<String,Object> login(UserRequestDto userRequestDto) {
 
         //传入用户名，密码
@@ -72,6 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         userMap.put("userInfo",user);
         //存储token
         userMap.put("token", JwtUtils.creatToken(tokenmap));
+        userMap.put("identityMap",user.getIdentitySet());
         return userMap;
     }
 

@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,7 @@ public class BarrageServiceImpl extends ServiceImpl<BarrageMapper, Barrage> impl
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult saveBarrage(BarrageDto barrageDto){
         if (barrageDto == null){
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
@@ -47,6 +49,7 @@ public class BarrageServiceImpl extends ServiceImpl<BarrageMapper, Barrage> impl
         //设置当前弹幕为可见
         barrage.setIsDeleted(CommonConstants.SHOW);
         barrage.setSumLike(0);
+        barrage.setTimeStamp(barrageDto.getTimestamp());
         save(barrage);
         //增加视频的弹幕数
         VideoEvent videoEvent = new VideoEvent();
@@ -69,6 +72,7 @@ public class BarrageServiceImpl extends ServiceImpl<BarrageMapper, Barrage> impl
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult deleteBarrage(Integer barrageId){
         if (barrageId == null){
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
@@ -109,6 +113,24 @@ public class BarrageServiceImpl extends ServiceImpl<BarrageMapper, Barrage> impl
         QueryWrapper<Barrage> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("video_id", videoId).eq("is_deleted",CommonConstants.SHOW)
                 .between("timestamp", startTime, endTime);
+
+        List<Barrage> barrageList = barrageMapper.selectList(queryWrapper);
+        return ResponseResult.okResult(barrageList);
+    }
+
+    /**
+     * 获取全部弹幕
+     *
+     * @param videoId
+     * @return
+     */
+    @Override
+    public ResponseResult getAllBarrage(Integer videoId) {
+        if (videoId == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
+        }
+        QueryWrapper<Barrage> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("video_id", videoId).eq("is_deleted",CommonConstants.SHOW);
 
         List<Barrage> barrageList = barrageMapper.selectList(queryWrapper);
         return ResponseResult.okResult(barrageList);

@@ -63,6 +63,10 @@ public class VideoDto {
      */
     private int sumDanMu;
     /**
+     * 总评论数量
+     */
+    private int sumComment;
+    /**
      * 总收入
      */
     private Double income;

@@ -62,8 +62,11 @@ public class VideoCompressServiceImpl extends ServiceImpl<VideoResolutionMapper,
         };
         // 创建一个MockMultipartFile对象
         MultipartFile multipartFile = new MockMultipartFile(videoTitle, resource.getFilename(), "video/"+fileExtension, resource.getByteArray());
+        //获取视频时长
+
         //视频压缩为1080p 60hz
         MultipartFile videoTo1080p60hz = FFmpegUtils.compressVideoTo1080p60hz(multipartFile, videoTitle);
+
 //        //视频压缩为1080p 30hz
 //        MultipartFile videoTo1080p30hz = FFmpegUtils.compressVideoTo1080p30hz(multipartFile,videoTitle);
 //        //视频压缩为720p 30hz

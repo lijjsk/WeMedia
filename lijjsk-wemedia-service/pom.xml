@@ -20,6 +20,7 @@
         <module>lijjsk-wemedia-authentication</module>
         <module>lijjsk-wemedia-manage</module>
         <module>lijjsk-wemedia-social</module>
+        <module>lijjsk-wemedia-chat</module>
     </modules>
 
     <properties>

@@ -1,5 +1,6 @@
 package com.lijjsk.video.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.common.enums.AppHttpCodeEnum;
 import com.lijjsk.video.service.*;
@@ -16,7 +17,6 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/wemedia/video")
-@CrossOrigin("*")
 public class VideoController {
     @Autowired
     private VideoUploadService videoUploadService;
@@ -42,6 +42,7 @@ public class VideoController {
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
     @GetMapping("/get/videoList")
+    @SentinelResource("getVideoList")
     public ResponseResult getVideoList(){
         return videoService.getVideoList();
     }
@@ -56,6 +57,10 @@ public class VideoController {
     @GetMapping("/get/videoInfo")
     public ResponseResult getVideoInfo(@RequestParam Integer videoId){
         return videoService.getVideoInfo(videoId);
+    }
+    @PutMapping("/down/video")
+    public ResponseResult downVideo(@RequestParam Integer videoId){
+        return videoService.downVideo(videoId);
     }
 }
 

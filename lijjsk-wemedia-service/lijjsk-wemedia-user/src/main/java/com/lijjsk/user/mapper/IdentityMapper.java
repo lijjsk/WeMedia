@@ -11,4 +11,6 @@ import java.util.Set;
 @Mapper
 public interface IdentityMapper extends BaseMapper<Identity> {
     Set<Menu> selectMenuByIdentityIdS(@Param("Ids") Set<Integer> setId);
+    //根据身份名字动态获取id
+    Integer selectIdentityIdByName(String identityName);
 }

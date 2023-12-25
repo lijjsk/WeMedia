@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.wemedia.video.pojos.Video;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 public interface VideoService extends IService<Video> {
@@ -34,4 +35,11 @@ public interface VideoService extends IService<Video> {
      * @return
      */
     public ResponseResult deleteVideo(Integer videoId);
+
+    /**
+     * 下架视频
+     * @param videoId
+     * @return
+     */
+    public ResponseResult downVideo(Integer videoId);
 }

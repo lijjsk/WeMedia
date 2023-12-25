@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lijjsk.user.mapper.MenuMapper">
+<mapper namespace="com.lijjsk.social.mapper.menu.MenuMapper">
     <select id="getMenusByUserId" resultType="com.lijjsk.model.wemedia.user.pojos.Menu">
         select m.*
         from menu as m

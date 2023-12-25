@@ -82,6 +82,11 @@ public class Video implements Serializable {
     @TableField("sum_danmu")
     private int sumDanMu;
     /**
+     * 总评论数量
+     */
+    @TableField("sum_comment")
+    private int sumComment;
+    /**
      * 总收入
      */
     @TableField("income")

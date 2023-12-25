@@ -37,6 +37,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @SentinelResource("addTask")
+    @Transactional
     public long addTask(Task task) {
         //1.添加任务到数据库中
 

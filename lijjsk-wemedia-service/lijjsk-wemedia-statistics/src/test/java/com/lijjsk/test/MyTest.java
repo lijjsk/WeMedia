@@ -15,6 +15,6 @@ public class MyTest {
     @Test
     public void test1(){
         VideoData videoData = new VideoData();
-        System.out.println(videoClient.updateVideoData(videoData));
+        System.out.println(videoClient.updateVideoData());
     }
 }

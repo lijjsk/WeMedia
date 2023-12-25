@@ -11,4 +11,5 @@ public interface ApplyService extends IService<Apply> {
     public ResponseResult deleteApply(Integer applyId);
     public ResponseResult checkApply(Integer applyId,Integer result);
     public ResponseResult getApplyList();
+    public ResponseResult getApplyStatus(Integer userId);
 }

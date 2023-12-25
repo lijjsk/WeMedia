@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="lijjsk-wemeida-video" />
+        <module name="lijjsk-wemedia-chat" />
         <module name="lijjsk-minio-demo" />
         <module name="lijjsk-wemedia-client-gateway" />
         <module name="lijjsk-wemedia-manage" />
@@ -31,7 +32,6 @@
       <module name="lijjsk-manage-login" target="18" />
       <module name="lijjsk-wemedia-advertising-gateway" target="18" />
       <module name="lijjsk-wemedia-barrage" target="18" />
-      <module name="lijjsk-wemedia-chat" target="18" />
       <module name="lijjsk-wemedia-comment" target="18" />
       <module name="lijjsk-wemedia-login" target="18" />
       <module name="lijjsk-wemedia-management-gateway" target="18" />

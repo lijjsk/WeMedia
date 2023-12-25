@@ -18,6 +18,14 @@ public class VideoBriefDto {
      * 视频封面图片
      */
     private String coverUrl;
+    /**
+     * 评论条数
+     */
+    private Integer sumComment;
+    /**
+     * 弹幕条数
+     */
+    private Integer sumDanMu;
     public VideoBriefDto(Video video) {
         BeanUtils.copyProperties(video, this);
     }

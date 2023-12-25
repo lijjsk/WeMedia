@@ -10,10 +10,12 @@ import com.lijjsk.utils.common.ProtostuffUtil;
 import com.lijjsk.video.mapper.VideoMapper;
 import com.lijjsk.video.service.VideoPublishService;
 import com.lijjsk.video.service.VideoTaskService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -33,6 +35,8 @@ public class VideoTaskServiceImpl implements VideoTaskService {
      * @param publishTime 发布的时间  可以做为任务的执行时间
      */
     @Override
+    @Transactional
+    @GlobalTransactional
     public void addVideoPublishToTask(Integer id, Date publishTime) {
         log.info("添加任务到延迟服务中——————begin");
         Task task = new Task();
@@ -52,7 +56,7 @@ public class VideoTaskServiceImpl implements VideoTaskService {
      * 消费任务 发布视频
      */
     @Override
-//    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 10000)
     public void publishVideoByTask() {
         log.info("消费任务，发布视频");
         ResponseResult responseResult = scheduleClient.pull(TaskTypeEnum.VIDEO_PUBLISH_TIME.getTaskType(), TaskTypeEnum.VIDEO_PUBLISH_TIME.getPriority());

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.wemedia.barrage.dtos.BarrageDto;
 import com.lijjsk.model.wemedia.barrage.pojos.Barrage;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public interface BarrageService extends IService<Barrage> {
     /**
@@ -20,6 +22,13 @@ public interface BarrageService extends IService<Barrage> {
      * @return
      */
     public ResponseResult deleteBarrage(Integer barrageId) throws JsonProcessingException;
+
+    /**
+     * 获取全部弹幕
+     * @param videoId
+     * @return
+     */
+    public ResponseResult getAllBarrage(Integer videoId);
     /**
      * 根据时间范围和视频id获取弹幕
      * @param videoId

@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,7 +27,6 @@ public class PositionServiceImpl extends ServiceImpl<PositionMapper, Advertiseme
     private PositionMapper positionMapper;
     /**
      * 获取广告位列表
-     *
      * @return
      */
     @Override
@@ -38,11 +38,11 @@ public class PositionServiceImpl extends ServiceImpl<PositionMapper, Advertiseme
 
     /**
      * 增加广告位
-     *
      * @param positionDto
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult addPosition(PositionDto positionDto) {
         AdvertisementPosition position = new AdvertisementPosition();
         BeanUtils.copyProperties(positionDto,position);
@@ -58,6 +58,7 @@ public class PositionServiceImpl extends ServiceImpl<PositionMapper, Advertiseme
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult deletePosition(Integer positionId) {
         AdvertisementPosition position = getById(positionId);
         position.setIsDeleted(CommonConstants.DELETED);
@@ -97,6 +98,7 @@ public class PositionServiceImpl extends ServiceImpl<PositionMapper, Advertiseme
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult updatePosition(AdvertisementPosition advertisementPosition) {
         AdvertisementPosition position = getById(advertisementPosition.getId());
         position.setNum(advertisementPosition.getNum());

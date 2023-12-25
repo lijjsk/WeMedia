@@ -1,5 +1,6 @@
 package com.lijjsk.video.service.impl;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lijjsk.common.constants.VideoConstants;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -115,10 +117,28 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper,Video> implements 
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult deleteVideo(Integer videoId) {
         Video video = getById(videoId);
         video.setStatus(VideoConstants.DELETED);
         updateById(video);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
+    }
+
+    /**
+     * 下架视频
+     * @param videoId
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResponseResult downVideo(Integer videoId) {
+        Video video = getById(videoId);
+        if (video == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
+        }
+        video.setStatus(VideoConstants.DOWN);
+        updateById(video);
+        return ResponseResult.okResult(200,"下架成功");
     }
 }

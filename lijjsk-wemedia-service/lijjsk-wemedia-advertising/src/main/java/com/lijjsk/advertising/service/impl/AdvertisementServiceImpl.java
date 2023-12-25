@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -48,6 +49,7 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult addAdvertisement(Integer advertiserId, String content, Integer duration, Integer position, MultipartFile multipartFile) {
         Advertisement advertisement = new Advertisement();
         advertisement.setAdvertiserId(advertiserId);
@@ -81,7 +83,7 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
         advertisement.setConversions(0);
         advertisement.setClicks(0);
         advertisement.setCtr(0.0);
-        advertisement.setConversion_Rate(0.0);
+        advertisement.setConversionRate(0.0);
         save(advertisement);
         positionService.reducePositionNum(position);
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
@@ -93,6 +95,7 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult stopAdvertisement(Integer advertisementId) {
         Advertisement advertisement = getById(advertisementId);
         advertisement.setStatus(AdvertisementConstants.END_PUTTING_IN);
@@ -101,8 +104,9 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")  // 每天凌晨触发一次
+    @Scheduled(fixedRate = 1000 * 60 * 10)  // 每天凌晨触发一次
     public void stopAdvertisementAuto(){
+        log.info("定时检查，停止投放广告");
         List<Advertisement> activeAdvertisements = advertisementMapper.selectList(Wrappers.<Advertisement>lambdaQuery()
                 .eq(Advertisement::getStatus,AdvertisementConstants.PUTTING_IN));
         // 获取当前时间
@@ -123,7 +127,8 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
      */
     @Override
     public ResponseResult getAllAdvertisement() {
-        List<Advertisement> advertisementList = advertisementMapper.selectList(Wrappers.<Advertisement>lambdaQuery());
+        List<Advertisement> advertisementList = advertisementMapper.selectList(Wrappers.<Advertisement>lambdaQuery()
+                .eq(Advertisement::getStatus,AdvertisementConstants.PUTTING_IN));
         return ResponseResult.okResult(advertisementList);
     }
 
@@ -195,12 +200,35 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
         }
 
         if (advertisement.getClicks() != 0) {
-            advertisement.setConversion_Rate(Double.parseDouble(df.format((double)advertisement.getConversions() / (double)advertisement.getClicks())));
+            advertisement.setConversionRate(Double.parseDouble(df.format((double)advertisement.getConversions() / (double)advertisement.getClicks())));
         } else {
-            advertisement.setConversion_Rate(0.0);
+            advertisement.setConversionRate(0.0);
         }
 
         updateById(advertisement);
         return ResponseResult.okResult(advertisement);
+    }
+    @Scheduled(fixedRate = 1000 * 10)
+    @Transactional
+    public void updateAdvertisementInfo() {
+        log.info("定时刷新广告信息");
+        List<Advertisement> advertisementList = advertisementMapper.selectList(Wrappers.<Advertisement>lambdaQuery()
+                .eq(Advertisement::getStatus,AdvertisementConstants.PUTTING_IN));
+        DecimalFormat df = new DecimalFormat("#.###");
+        for (Advertisement advertisement : advertisementList) {
+            if(advertisement.getShows() != 0) {
+                advertisement.setCtr(Double.parseDouble(df.format((double)advertisement.getClicks() / (double)advertisement.getShows())));
+            } else {
+                advertisement.setCtr(0.0);
+            }
+
+            if (advertisement.getClicks() != 0) {
+                advertisement.setConversionRate(Double.parseDouble(df.format((double)advertisement.getConversions() / (double)advertisement.getClicks())));
+            } else {
+                advertisement.setConversionRate(0.0);
+            }
+
+            updateById(advertisement);
+        }
     }
 }

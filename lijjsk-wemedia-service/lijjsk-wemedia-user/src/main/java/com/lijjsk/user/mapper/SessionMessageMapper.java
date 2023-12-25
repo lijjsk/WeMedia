@@ -8,5 +8,5 @@ import java.util.List;
 
 @Mapper
 public interface SessionMessageMapper extends BaseMapper<SessionMessage> {
-    List<SessionMessage> getHistoryMessageBySessionId(Integer sessionId);
+        List<SessionMessage> getHistoryMessageBySessionId(Integer sessionId);
 }

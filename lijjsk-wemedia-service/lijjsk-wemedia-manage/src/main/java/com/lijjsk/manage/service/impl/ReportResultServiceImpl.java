@@ -15,6 +15,7 @@ import com.lijjsk.model.manage.report.pojos.ReportResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -67,7 +68,7 @@ public class ReportResultServiceImpl extends ServiceImpl<ReportResultMapper, Rep
      */
     @Override
     public ResponseResult getOneReportResult(Integer reportId) {
-        ReportResult reportResult = getOne(Wrappers.<ReportResult>lambdaQuery().eq(ReportResult::getReportId,reportId)
+        ReportResult reportResult = reportResultMapper.selectOne(Wrappers.<ReportResult>lambdaQuery().eq(ReportResult::getReportId,reportId)
                 .eq(ReportResult::getIsDelete,CommonConstants.SHOW));
         return ResponseResult.okResult(reportResult);
     }
@@ -78,7 +79,12 @@ public class ReportResultServiceImpl extends ServiceImpl<ReportResultMapper, Rep
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult saveReportResult(ReportResultDto reportResultDto) {
+        ReportResult flag = reportResultMapper.selectById(reportResultDto.getReportId());
+        if (flag != null){
+            return ResponseResult.errorResult(400,"该举报已经被处理");
+        }
         ReportResult reportResult = new ReportResult();
         reportResult.setReportId(reportResultDto.getReportId());
         reportResult.setProcessResult(reportResultDto.getProcessResult());
@@ -100,6 +106,7 @@ public class ReportResultServiceImpl extends ServiceImpl<ReportResultMapper, Rep
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult deleteReportResult(Integer reportResultId) {
         ReportResult reportResult = reportResultMapper.selectOne(Wrappers.<ReportResult>lambdaQuery().eq(ReportResult::getReportId,reportResultId));
         reportResult.setIsDelete(CommonConstants.DELETED);
@@ -113,6 +120,7 @@ public class ReportResultServiceImpl extends ServiceImpl<ReportResultMapper, Rep
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult updateReportResult(ReportResultDto reportResultDto) {
         ReportResult reportResult = getById(reportResultDto.getId());
         reportResult.setProcessResult(reportResultDto.getProcessResult());

@@ -353,7 +353,82 @@ public class FFmpegUtils {
         }
         return null;
     }
+    // ...
 
+    /**
+     * 获取视频时长
+     *
+     * @param multipartFile 视频文件
+     * @return 视频时长（格式：hh:mm:ss）
+     */
+    public static String getVideoDuration(MultipartFile multipartFile,String fileName) {
+        try {
+            // 将 MultipartFile 转换为临时文件
+            File inputFile = convertMultipartFileToFile(multipartFile, fileName);
+
+            // 获取视频时长
+            String duration = getVideoDuration(inputFile.getAbsolutePath());
+
+            // 删除临时文件
+            inputFile.delete();
+
+            return duration;
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // 新增获取视频时长的方法
+    private static String getVideoDuration(String videoFilePath) throws IOException, InterruptedException {
+        // 构建FFmpeg命令
+        String ffmpegCommand = "ffmpeg -i " + videoFilePath;
+
+        // 执行命令
+        ProcessBuilder processBuilder = new ProcessBuilder(ffmpegCommand.split("\\s+"));
+        Process process = processBuilder.start();
+
+        // 读取命令输出
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        StringBuilder output = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            output.append(line).append("\n");
+        }
+
+        // 等待命令执行完成
+        int exitCode = process.waitFor();
+
+        if (exitCode == 0) {
+            // 解析输出，获取时长信息
+            String durationLine = extractDurationInfo(output.toString());
+            return parseDuration(durationLine);
+        } else {
+            // 命令执行失败，输出错误信息
+            System.err.println("FFmpeg command execution failed. Output:\n" + output.toString());
+            return null;
+        }
+    }
+
+    // 新增解析时长信息的方法（保持原有的解析逻辑不变）
+    private static String extractDurationInfo(String output) {
+        // 在FFmpeg的输出中查找包含时长信息的行
+        // 例如：Duration: 00:01:23.45, start: 0.678901, bitrate: 1234 kb/s
+        int durationIndex = output.indexOf("Duration:");
+        if (durationIndex != -1) {
+            return output.substring(durationIndex, output.indexOf("\n", durationIndex));
+        } else {
+            return null;
+        }
+    }
+
+    private static String parseDuration(String durationLine) {
+        // 从时长信息中提取时长部分
+        // 例如：Duration: 00:01:23.45
+        int start = durationLine.indexOf("Duration: ") + "Duration: ".length();
+        int end = durationLine.indexOf(",", start);
+        return durationLine.substring(start, end).trim();
+    }
     private static final int SAMPLING_RATE = 16000;
     private static final int SINGLE_CHANNEL = 1;
 

@@ -12,6 +12,4 @@ public interface MenuMapper extends BaseMapper<Menu> {
     //根据用户id选择权限
     List<Menu> getMenusByUserId(@Param("userId") Integer userId);
     Menu selectMenuByURI(@Param("uri") String uri);
-
-
 }

@@ -15,6 +15,10 @@ public class ApplyController {
     public ResponseResult saveApply(@RequestBody ApplyDto applyDto){
         return applyService.saveApply(applyDto);
     }
+    @GetMapping("/get/apply/status")
+    public ResponseResult getApplyStatus(@RequestParam("userId") Integer userId){
+        return applyService.getApplyStatus(userId);
+    }
     @DeleteMapping("/delete/apply")
     public ResponseResult deleteApply(@RequestParam("applyId") Integer applyId){
         return applyService.deleteApply(applyId);

@@ -18,5 +18,8 @@
             #{id}
         </foreach>
     </select>
-
+    <select id="selectIdentityIdByName">
+        select id from identity
+        where name=#{identityName}
+    </select>
 </mapper>

@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> imple
      * @return 统一结果返回体
      */
     @Override
+    @Transactional
     public ResponseResult uploadVideo(Integer userId,MultipartFile multipartFile) {
         //检查参数
         if(multipartFile == null || multipartFile.getSize() == 0){
@@ -86,6 +88,7 @@ public class VideoUploadServiceImpl extends ServiceImpl<VideoMapper,Video> imple
 
 
     @Override
+    @Transactional
     public ResponseResult uploadVideoInfo(MultipartFile image,Integer id,String title,String briefIntro) {
         Video video = getById(id);
         video.setTitle(title);

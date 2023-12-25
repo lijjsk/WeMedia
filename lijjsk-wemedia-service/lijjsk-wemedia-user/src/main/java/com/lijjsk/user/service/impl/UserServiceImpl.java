@@ -4,7 +4,9 @@ package com.lijjsk.user.service.impl;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lijjsk.common.constants.UserStates;
 import com.lijjsk.model.wemedia.user.dtos.*;
 import com.lijjsk.model.wemedia.user.pojos.Identity;
 import com.lijjsk.model.wemedia.user.pojos.Menu;
@@ -23,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -44,6 +47,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private final LambdaQueryWrapper<Identity> lambdaQueryWrapper=new LambdaQueryWrapper<Identity>();
 
     private final static String initPassword = "handsome@123";
+    private final static String initIdentity = "用户";
+
+
+    @Override
+    public List<UserWithIdentityResponseDto> getAllUser() {
+
+        List<User> userList = userMapper.selectList(Wrappers.<User>lambdaQuery());
+        List<User> userListWithIdentity =new ArrayList<>();
+        List<UserWithIdentityResponseDto> userWithIdentityResponseDtos=new ArrayList<>();
+        for(User user:userList){
+            userListWithIdentity.add(userMapper.selectUserByUsername(user.getUsername()));
+        }
+        for(User user:userListWithIdentity){
+            UserWithIdentityResponseDto userWithIdentityResponseDto=new UserWithIdentityResponseDto();
+            userWithIdentityResponseDto.setId(user.getId());
+            userWithIdentityResponseDto.setAge(user.getState());
+            userWithIdentityResponseDto.setEmail(user.getEmail());
+            userWithIdentityResponseDto.setPhone(user.getPhone());
+            userWithIdentityResponseDto.setSex(user.getSex());
+            userWithIdentityResponseDto.setState(user.getState());
+            userWithIdentityResponseDto.setUsername(user.getUsername());
+            userWithIdentityResponseDto.setIsSecret(user.getIsSecret());
+            userWithIdentityResponseDto.setProfilePhoto(user.getProfilePhoto());
+            userWithIdentityResponseDto.setIdentities(user.getIdentitySet());
+            userWithIdentityResponseDtos.add(userWithIdentityResponseDto);
+
+        }
+        return userWithIdentityResponseDtos;
+    }
 
     /**
      * 登录，查询权限
@@ -141,20 +173,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     /**
      * 注册用户
      */
+    /**
+     * 注册用户
+     */
     @Override
+    @Transactional
     public Boolean addUser(User user) {
+        User flag = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, user.getUsername()));
+        if (flag != null){
+            log.error("该用户名已经存在{}",user.getUsername());
+            return false;
+        }
         //加密
         String encoderPassword = encoder.encode(user.getPassword());
         user.setPassword(encoderPassword);
+        //用户默认身份设置
+        log.info("用户默认身份initIdentity:==========================>{}",initIdentity);
+        Integer defaultIdentityId=identityMapper.selectIdentityIdByName(initIdentity);
         //存入
-        int res = userMapper.insert(user);
-        return res != 0;
+        save(user);
+        return userMapper.addUserIdentity(user.getId(),defaultIdentityId);
     }
 
     /**
      * 用户信息更新，不包含密码
      */
     @Override
+    @Transactional
     public Boolean updateUser(UserResponseDto userResponseDto) {
         //存入
         Boolean res = userMapper.updateUser(userResponseDto);
@@ -165,6 +210,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      * 关注与取关用户，根据 type的值判断
      */
     @Override
+    @Transactional
     public Boolean followUser(FollowRequestDto followRequestDto, Boolean type) {
         //被关注
         Integer following_id = followRequestDto.getFollowing_id();
@@ -192,6 +238,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     /**
      * 更新用户密码
      */
+    @Transactional
     public Boolean updateUserPassword(UserPasswordChangeDto userPasswordChangeDto) {
         String prePassword = userPasswordChangeDto.getPrePassword();
         String sufPassword = userPasswordChangeDto.getSufPassword();
@@ -202,7 +249,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String checkPassword = userMapper.selectUserPasswordById(userId);
         log.info("查出来的用户密码=========================>{}", checkPassword);
         if (encoder.matches(prePassword, checkPassword)) {
-            String nextPassword = encoder.encode(prePassword);
+            String nextPassword = encoder.encode(sufPassword);
             return userMapper.updateUserPasswordById(nextPassword, userId);
         }
         return false;
@@ -228,56 +275,69 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return userMapper.selectUserFollowingListById(userId);
     }
 
-    /**
-     * 用户设置为禁言状态
-     */
     @Override
+    @Transactional
     public Boolean setUserMUTED(Integer userId) {
         lambdaUpdateWrapper.eq(User::getId, userId);
-        lambdaUpdateWrapper.set(User::getState, 3);
-
-        return userMapper.update(lambdaUpdateWrapper) != 0;
+        lambdaUpdateWrapper.set(User::getState, UserStates.MUTED.getCode());
+        boolean flag = userMapper.update(lambdaUpdateWrapper) != 0;
+        lambdaUpdateWrapper.clear();
+        return flag;
     }
 
     /**
      * 解除禁言用户
      */
     @Override
+    @Transactional
     public Boolean setUserUnMUTED(Integer userId) {
         lambdaUpdateWrapper.eq(User::getId, userId);
-        lambdaUpdateWrapper.set(User::getState, 1);
-        return userMapper.update(lambdaUpdateWrapper) != 0;
+        lambdaUpdateWrapper.set(User::getState, UserStates.ACTIVE.getCode());
+        boolean flag = userMapper.update(lambdaUpdateWrapper) != 0;
+        lambdaUpdateWrapper.clear();
+        return flag;
     }
 
     /**
      * 冻结用户
      */
     @Override
+    @Transactional
     public Boolean setUserBANNED(Integer userId) {
         lambdaUpdateWrapper.eq(User::getId, userId);
-        lambdaUpdateWrapper.set(User::getState, 2);
-        return userMapper.update(lambdaUpdateWrapper) != 0;
+        lambdaUpdateWrapper.set(User::getState, UserStates.BANNED.getCode());
+        log.info("{}",UserStates.BANNED.getCode());
+        boolean flag = userMapper.update(lambdaUpdateWrapper) != 0;
+        lambdaUpdateWrapper.clear();
+        return flag;
     }
 
     /**
      * 解冻用户
      */
     @Override
+    @Transactional
     public Boolean setUserUnBANNED(Integer userId) {
         lambdaUpdateWrapper.eq(User::getId, userId);
-        lambdaUpdateWrapper.set(User::getState, 1);
-        return userMapper.update(lambdaUpdateWrapper) != 0;
+        lambdaUpdateWrapper.set(User::getState, UserStates.ACTIVE.getCode());
+        boolean flag = userMapper.update(lambdaUpdateWrapper) != 0;
+        lambdaUpdateWrapper.clear();
+        return flag;
     }
+
 
     /**
      * 用户重置密码
      */
     @Override
+    @Transactional
     public Boolean resetPassword(Integer userId) {
         lambdaUpdateWrapper.eq(User::getId, userId);
         log.info("用户重置密码============================={}", initPassword);
         lambdaUpdateWrapper.set(User::getPassword, encoder.encode(initPassword));
-        return userMapper.update(lambdaUpdateWrapper) != 0;
+        boolean flag = userMapper.update(lambdaUpdateWrapper) != 0;
+        lambdaUpdateWrapper.clear();
+        return flag;
     }
 
     /**
@@ -285,6 +345,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      */
     @Override
     @SentinelResource("addIdentity")
+    @Transactional
     public Boolean getVIPIdentity(Integer userId, Integer identityId) {
         return userMapper.addUserIdentity(userId, identityId);
     }
@@ -293,6 +354,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      * 用户去除会员权限
      */
     @Override
+    @Transactional
     public Boolean removeVIPIdentity(Integer userId, Integer identityId) {
         return userMapper.removeUserIdentity(userId, identityId);
     }
@@ -301,6 +363,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      * 用户获得大会员权限
      */
     @Override
+    @Transactional
     public Boolean getSuperVIP(Integer userId, Integer identityId) {
         return userMapper.addUserIdentity(userId, identityId);
     }
@@ -309,6 +372,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      * 用户去除大会员权限
      */
     @Override
+    @Transactional
     public Boolean removeSuperVIP(Integer userId, Integer identityId) {
         return userMapper.removeUserIdentity(userId, identityId);
     }

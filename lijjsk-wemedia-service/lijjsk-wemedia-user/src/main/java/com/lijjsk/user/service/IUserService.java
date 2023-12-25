@@ -88,4 +88,5 @@ public interface IUserService extends IService<User> {
      * 获取身份列表
      */
     List<Identity> getIdentityList();
+    List<UserWithIdentityResponseDto>getAllUser();
 }

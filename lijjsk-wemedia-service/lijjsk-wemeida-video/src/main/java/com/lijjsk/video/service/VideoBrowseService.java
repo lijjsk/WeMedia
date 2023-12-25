@@ -49,5 +49,5 @@ public interface VideoBrowseService extends IService<Video> {
      * @param videoData
      * @return
      */
-    public ResponseResult updateVideoData(VideoData videoData);
+    public Boolean updateVideoData(VideoData videoData);
 }

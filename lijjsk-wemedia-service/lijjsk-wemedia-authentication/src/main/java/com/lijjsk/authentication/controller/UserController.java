@@ -31,7 +31,9 @@ public class UserController {
     @PostMapping("/login")
     public ResponseResult Login(@RequestBody UserRequestDto userRequestDto) {
         Map<String,Object> userInfo = userService.login(userRequestDto);
-
+        if (userInfo == null){
+            return ResponseResult.errorResult(400,"用户名或者密码错误!");
+        }
         if(userInfo.get("token")!=null){
             return new ResponseResult(200,"登录成功",userInfo);
         }else {

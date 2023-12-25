@@ -28,6 +28,11 @@ public class BarrageController {
         return barrageService.getBarrage(videoId,startTime,endTime);
 
     }
+    @GetMapping("/get/all/barrage")
+    public ResponseResult getAllBarrage(@RequestParam Integer videoId){
+        return barrageService.getAllBarrage(videoId);
+
+    }
     @GetMapping("/test")
     public String test(){
         return "test";

@@ -12,11 +12,17 @@ import com.lijjsk.model.common.enums.AppHttpCodeEnum;
 import com.lijjsk.model.manage.apply.dtos.ApplyDto;
 import com.lijjsk.model.manage.apply.pojos.Apply;
 import com.lijjsk.model.wemedia.user.dtos.UserIdentityDto;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 @Service
 @Slf4j
 public class ApplyServiceImpl extends ServiceImpl<ApplyMapper, Apply> implements ApplyService {
@@ -25,9 +31,14 @@ public class ApplyServiceImpl extends ServiceImpl<ApplyMapper, Apply> implements
     @Autowired
     private IUserClient userClient;
     @Override
+    @Transactional
     public ResponseResult saveApply(ApplyDto applyDto) {
         if(applyDto == null){
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
+        }
+        Apply flag = applyMapper.selectOne(Wrappers.<Apply>lambdaQuery().eq(Apply::getUserId, applyDto.getUserId()));
+        if (flag != null){
+            return ResponseResult.errorResult(400,"重复申请");
         }
         Apply apply = new Apply();
         apply.setContent(applyDto.getContent());
@@ -41,6 +52,7 @@ public class ApplyServiceImpl extends ServiceImpl<ApplyMapper, Apply> implements
     }
 
     @Override
+    @Transactional
     public ResponseResult deleteApply(Integer applyId) {
         Apply apply = getById(applyId);
         apply.setIsDelete(CommonConstants.DELETED);
@@ -49,6 +61,8 @@ public class ApplyServiceImpl extends ServiceImpl<ApplyMapper, Apply> implements
     }
 
     @Override
+    @GlobalTransactional
+    @Transactional
     public ResponseResult checkApply(Integer applyId, Integer result) {
         Apply apply = getById(applyId);
         if(result == 0){
@@ -71,5 +85,28 @@ public class ApplyServiceImpl extends ServiceImpl<ApplyMapper, Apply> implements
     public ResponseResult getApplyList() {
         List<Apply> applyList = applyMapper.selectList(Wrappers.<Apply>lambdaQuery().eq(Apply::getIsDelete,CommonConstants.SHOW));
         return ResponseResult.okResult(applyList);
+    }
+
+    @Override
+    public ResponseResult getApplyStatus(Integer userId) {
+        Apply apply = applyMapper.selectOne(Wrappers.<Apply>lambdaQuery().eq(Apply::getUserId,userId));
+        if (apply == null){
+            return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
+        }
+        Map<String,String> result = new HashMap<>();
+        if (Objects.equals(apply.getStatus(), ApplyConstants.PASS)) {
+            result.put("status","1");
+            result.put("message","审核通过");
+            return ResponseResult.okResult(result);
+        }else if (Objects.equals(apply.getStatus(), ApplyConstants.REFUSE)){
+            result.put("status","0");
+            result.put("message","申请被拒绝");
+            return ResponseResult.okResult(result);
+        }else if (Objects.equals(apply.getStatus(), ApplyConstants.WAIT_FOR_PROCESS)){
+            result.put("status","2");
+            result.put("message","未申请或未审核");
+            return ResponseResult.okResult(result);
+        }
+        return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
     }
 }

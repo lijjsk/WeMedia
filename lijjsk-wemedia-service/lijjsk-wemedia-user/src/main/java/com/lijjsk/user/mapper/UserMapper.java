@@ -105,4 +105,5 @@ public interface UserMapper extends BaseMapper<User> {
      */
     Boolean removeUserIdentity(@Param("userId") Integer userId, @Param("identityId") Integer identityId);
 
+
 }

@@ -46,10 +46,11 @@ public class WebSecurityConfig {
         httpSecurity.authorizeHttpRequests(
                 authorizeHttpRequests->authorizeHttpRequests
                         //使用自定义认证逻辑
-                        .anyRequest().access(sttAuthorizationManager)
+//                        .anyRequest().access(sttAuthorizationManager)
+                        .anyRequest().permitAll()
         );
         //将jwt过滤器添加到过滤器链中
-        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
     /**

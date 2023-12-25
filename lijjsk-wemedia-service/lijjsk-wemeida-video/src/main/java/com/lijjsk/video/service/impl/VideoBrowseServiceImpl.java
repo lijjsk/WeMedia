@@ -22,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -138,10 +139,8 @@ public class VideoBrowseServiceImpl extends ServiceImpl<VideoMapper, Video> impl
      */
     @Override
     @SentinelResource("updateVideoData")
-    public ResponseResult updateVideoData(VideoData videoData) {
-        if (videoData == null){
-            return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
-        }
+    @Transactional
+    public Boolean updateVideoData(VideoData videoData) {
         Video video = getById(videoData.getVideoId());
 //        video.setSumDanMu(video.getSumDanMu()+ videoData.getSumDanMu());
 //        video.setSumCoins(videoData.getSumCoins()+ video.getSumCoins());
@@ -151,6 +150,6 @@ public class VideoBrowseServiceImpl extends ServiceImpl<VideoMapper, Video> impl
 //        video.setSumLike(videoData.getSumLike() + videoData.getSumLike());
         BeanUtils.copyProperties(videoData,video);
         updateById(video);
-        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
+        return true;
     }
 }

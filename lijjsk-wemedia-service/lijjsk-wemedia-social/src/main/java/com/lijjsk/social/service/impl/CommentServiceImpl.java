@@ -21,6 +21,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Wrapper;
 import java.util.Date;
@@ -41,6 +42,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult saveComment(CommentDto commentDto) {
         if (commentDto == null){
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
@@ -65,7 +67,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         videoEvent.setType(EventConstants.COMMENT);
         ObjectMapper objectMapper = new ObjectMapper();
         try{
-            kafkaTemplate.send("add_barrage_topic",objectMapper.writeValueAsString(videoEvent));
+            kafkaTemplate.send("add_comment_topic",objectMapper.writeValueAsString(videoEvent));
         }catch (JsonProcessingException e){
             log.error("增加评论消息发送失败");
             e.printStackTrace();
@@ -79,6 +81,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
      * @return
      */
     @Override
+    @Transactional
     public ResponseResult deleteComment(Integer commentId) {
         if (commentId == null){
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);

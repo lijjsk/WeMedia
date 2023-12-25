@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "wemedia-video",configuration = FeignConfig.class)
 public interface IVideoClient {
-    @PostMapping(value = "/api/v1/update/video", consumes = "application/json;charset=UTF-8", produces = "application/json;charset=UTF-8")
-    public String updateVideoData(@RequestBody VideoData videoData);
+    /**
+     * 添加延迟任务
+     * @return
+     */
+    @PostMapping("/api/v1/video/update")
+    public boolean updateVideoData();
 }
