@@ -1,6 +1,4 @@
 package com.lijjsk.user.controller;
-
-
 import com.lijjsk.model.common.dtos.ResponseResult;
 import com.lijjsk.model.common.enums.AppHttpCodeEnum;
 import com.lijjsk.model.wemedia.user.dtos.*;
@@ -10,6 +8,7 @@ import com.lijjsk.user.mapper.MenuMapper;
 import com.lijjsk.user.service.IUserService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,23 @@ public class UserController {
             return ResponseResult.errorResult(AppHttpCodeEnum.FAILED);
         }
     }
-
+    @PostMapping("/edit")
+    public ResponseResult editUserInfo(@RequestParam("userId") Integer userId,
+                                       @RequestParam("profilePhoto") MultipartFile multipartFile,
+                                       @RequestParam("username") String username,
+                                       @RequestParam("age") Integer age,
+                                       @RequestParam("sex") Integer sex,
+                                       @RequestParam("phone") String phone){
+        Map<String,Object> userInfo = userService.editUserInfo(userId,multipartFile,username,age,sex,phone);
+        if (userInfo == null){
+            return ResponseResult.errorResult(400,"用户名或者密码错误!");
+        }
+        if(userInfo.get("token")!=null){
+            return new ResponseResult(200,"登录成功",userInfo);
+        }else {
+            return ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_PASSWORD_ERROR);
+        }
+    }
     /**
      * 关注用户
      */

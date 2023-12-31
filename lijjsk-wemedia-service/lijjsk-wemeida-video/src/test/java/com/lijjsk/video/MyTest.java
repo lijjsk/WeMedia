@@ -15,7 +15,6 @@ public class MyTest {
     @Test
     public void test01(){
         System.out.println(fileStorageService.builderFilePathType("1", "11111","test.mp4","video"));
-
     }
     @Test
     public void test02(){

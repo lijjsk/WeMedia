@@ -24,6 +24,10 @@
         </dependency>
         <dependency>
             <groupId>org.example</groupId>
+            <artifactId>lijjsk-wemedia-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.example</groupId>
             <artifactId>lijjsk-wemedia-schedule</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

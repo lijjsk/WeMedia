@@ -1,12 +1,14 @@
 package com.lijjsk.user.service.impl;
-
+import com.lijjsk.model.common.dtos.ResponseResult;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lijjsk.common.constants.UserStates;
+import com.lijjsk.model.common.enums.AppHttpCodeEnum;
 import com.lijjsk.model.wemedia.user.dtos.*;
 import com.lijjsk.model.wemedia.user.pojos.Identity;
 import com.lijjsk.model.wemedia.user.pojos.Menu;
@@ -15,18 +17,23 @@ import com.lijjsk.user.mapper.IdentityMapper;
 import com.lijjsk.user.mapper.MenuMapper;
 import com.lijjsk.user.mapper.UserMapper;
 import com.lijjsk.user.service.IUserService;
+import com.lijjsk.utils.common.FFmpegUtils;
 import com.lijjsk.utils.common.JwtUtils;
+import com.minio.file.service.FileStorageService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureException;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -42,6 +49,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     IdentityMapper identityMapper;
     @Resource
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private FileStorageService fileStorageService;
 
     private final LambdaUpdateWrapper<User> lambdaUpdateWrapper=new LambdaUpdateWrapper<User>();
     private final LambdaQueryWrapper<Identity> lambdaQueryWrapper=new LambdaQueryWrapper<Identity>();
@@ -204,6 +213,67 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         //存入
         Boolean res = userMapper.updateUser(userResponseDto);
         return res;
+    }
+
+    /**
+     * 更新用户信息
+     *
+     * @param userId
+     * @param multipartFile
+     * @param username
+     * @param age
+     * @param sex
+     * @param phone
+     * @return
+     */
+    @Override
+    public Map<String,Object> editUserInfo(Integer userId, MultipartFile multipartFile, String username, Integer age, Integer sex, String phone) {
+        User user = userMapper.selectById(userId);
+        if (multipartFile != null){
+            //获取原图片名
+            MultipartFile image = FFmpegUtils.getThumbnailFromMultipartFile(multipartFile);
+            String originalImageName = image.getOriginalFilename();
+            String uuid = UUID.randomUUID().toString().replace("-", "");
+            String imageUrl = null;
+            try {
+                imageUrl = fileStorageService.uploadImgFile(String.valueOf(userId),uuid,originalImageName,image.getInputStream());
+                log.info("用户头像上传到minio中,imageUrl:{}",imageUrl);
+            } catch (IOException e) {
+                log.error("上传用户头像失败");
+                e.printStackTrace();
+            }
+            user.setProfilePhoto(imageUrl);
+        }
+        if (StringUtils.isNotBlank(username)){
+            user.setUsername(username);
+        }
+        if (age != null){
+            user.setAge(age);
+        }
+        if (sex != null && (sex == 1 || sex == 0)){
+            user.setAge(age);
+        }
+        if (phone != null){
+            user.setPhone(phone);
+        }
+        updateById(user);
+        User userIdentity = userMapper.selectUserByUsername(user.getUsername());
+        Map<String, Object> tokenmap = new HashMap<>();
+        tokenmap.put("用户Id", userIdentity.getId());
+        tokenmap.put("用户Name", userIdentity.getUsername());
+        tokenmap.put("用户身份", userIdentity.getIdentitySet());
+        tokenmap.put("用户权限", userIdentity.getMenus());
+        tokenmap.put("用户状态", userIdentity.getState());
+
+        //存储用户信息的map
+        Map<String,Object> userMap=new HashMap<>();
+        log.info("用户map==============================={}",tokenmap);
+        //获取并存储用户个人信息
+        userMap.put("userInfo",userIdentity);
+        //存储token
+        userMap.put("token", JwtUtils.creatToken(tokenmap));
+        userMap.put("identityMap",userIdentity.getIdentitySet());
+        return userMap;
     }
 
     /**

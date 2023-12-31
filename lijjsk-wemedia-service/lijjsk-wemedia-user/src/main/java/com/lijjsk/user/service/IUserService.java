@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lijjsk.model.wemedia.user.dtos.*;
 import com.lijjsk.model.wemedia.user.pojos.Identity;
 import com.lijjsk.model.wemedia.user.pojos.User;
-
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import com.lijjsk.model.common.dtos.ResponseResult;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +38,17 @@ public interface IUserService extends IService<User> {
      */
     Boolean updateUser(UserResponseDto userResponseDto);
 
+    /**
+     * 更新用户信息
+     * @param userId
+     * @param multipartFile
+     * @param username
+     * @param age
+     * @param sex
+     * @param phone
+     * @return
+     */
+    public Map<String,Object> editUserInfo(Integer userId, MultipartFile multipartFile, String username, Integer age, Integer sex, String phone);
     /**
      * 用户自己更新用户密码
      */

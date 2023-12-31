@@ -27,7 +27,7 @@ public class RedisDataSyncTaskImpl implements RedisDataSyncTask {
     @Autowired
     private VideoMapper videoMapper;
 
-    @Scheduled(fixedRate = 1000 * 60) // 每隔10秒执行一次，根据需要进行调整
+    @Scheduled(fixedRate = 1000 * 60) // 每隔60秒执行一次，根据需要进行调整
     @Transactional
     public void syncDataToDatabase() {
         log.info("同步视频数据");

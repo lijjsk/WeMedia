@@ -66,13 +66,16 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper,Video> implements 
     }
     // 从视频列表中随机获取指定数量的视频
     private List<Video> getRandomVideos(List<Video> allVideos, int count) {
-        List<Video> result = new ArrayList<>();
+        List<Video> result = new ArrayList<>(count);  // 限制容量，提高效率
+        Set<Integer> selectedVideoIds = new HashSet<>();
+
         Random random = new Random();
 
-        while (result.size() < count) {
+        while (result.size() < count && selectedVideoIds.size() < allVideos.size()) {
             Video randomVideo = allVideos.get(random.nextInt(allVideos.size()));
-            if (!returnedVideoIds.contains(randomVideo.getId())) {
+            if (!selectedVideoIds.contains(randomVideo.getId())) {
                 result.add(randomVideo);
+                selectedVideoIds.add(randomVideo.getId());
             }
         }
 
@@ -86,7 +89,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper,Video> implements 
      */
     @Override
     public ResponseResult getUserVideoList(Integer userId) {
-        List<Video> allVideos = videoMapper.selectList(Wrappers.<Video>lambdaQuery().eq(Video::getUserId, userId));
+        List<Video> allVideos = videoMapper.selectList(Wrappers.<Video>lambdaQuery().eq(Video::getUserId, userId).ne(Video::getStatus,VideoConstants.DELETED));
         return ResponseResult.okResult(allVideos);
     }
 
@@ -100,6 +103,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper,Video> implements 
     @Override
     public ResponseResult getVideoInfo(Integer videoId) {
         VideoDto videoDto = new VideoDto();
+
         Video video = getById(videoId);
         BeanUtils.copyProperties(video,videoDto);
         VideoResolution videoResolution = videoResolutionMapper.getVideoResolution(video.getId().toString(), "1080p60hz");

@@ -8,6 +8,11 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <dependencies>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>minio-file-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
         <dependency>
             <groupId>javax.xml.bind</groupId>

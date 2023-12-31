@@ -72,7 +72,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             log.error("增加评论消息发送失败");
             e.printStackTrace();
         }
-        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
+        return ResponseResult.okResult(comment);
     }
 
     /**
